@@ -1,0 +1,2093 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bugfinn Pattern Manager</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mitr:wght@400;500;600;700&family=Prompt:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --font-main: 'Prompt', 'Mitr', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans Thai", sans-serif;
+  --bg-page: #fdf0f7;
+  --pink-primary: #ff7aa8;
+  --pink-primary-dark: #f06292;
+  --pink-light: #fff0f5;
+  --pink-border: #ffb5cb;
+  --blue-border: #9ed4fd;
+  --purple-border: #d8c8f0;
+  --border-light: #ebdbe3;
+  --dark: #3d2b35;
+  --body-text: #4a3843;
+  --muted: #6f5d69;
+  --white: #ffffff;
+  --shadow-card: 0 8px 24px rgba(210, 165, 185, 0.16);
+  --shadow-card-hover: 0 14px 32px rgba(210, 165, 185, 0.28);
+  --danger: #ef4444;
+  --success: #22c55e;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  padding:0;
+  font-family:var(--font-main);
+  background-color:var(--bg-page);
+  background-image:
+    radial-gradient(circle at 10% 20%, rgba(255, 182, 193, 0.2) 0%, transparent 35%),
+    radial-gradient(circle at 90% 25%, rgba(186, 225, 255, 0.25) 0%, transparent 35%),
+    radial-gradient(circle at 50% 80%, rgba(255, 209, 220, 0.25) 0%, transparent 40%),
+    linear-gradient(180deg, #fdf0f7 0%, #fff5f9 25%, #fdf0f7 100%);
+  color:var(--dark);
+  min-height:100vh;
+  position:relative;
+  overflow-x:hidden;
+}
+
+/* Background floating decorations */
+.bg-decorations{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
+  overflow:hidden;
+}
+.bg-decor{
+  position:absolute;
+  user-select:none;
+  filter:drop-shadow(0 2px 6px rgba(255, 182, 193, 0.25));
+}
+.bg-heart-pink{
+  color:#ff98bb;
+  font-size:18px;
+  opacity:0.85;
+}
+.bg-heart-blue{
+  color:#9ed4fd;
+  font-size:18px;
+  opacity:0.85;
+}
+.bg-cloud{
+  opacity:0.65;
+}
+
+/* Header Banner */
+.header-banner{
+  width:100%;
+  background:#ffe5ef;
+  display:flex;
+  justify-content:center;
+  overflow:hidden;
+  position:relative;
+  z-index:1;
+}
+.banner-img{
+  width:100%;
+  max-width:1669px;
+  height:178px;
+  display:block;
+  object-fit:cover;
+}
+
+/* Main Container */
+.main-wrapper{
+  max-width:1669px;
+  margin:0 auto;
+  padding:0 33px 36px 33px;
+  position:relative;
+  z-index:1;
+}
+
+/* Action Bar Row */
+.action-bar-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:16px;
+  margin:6px 0 38px 0;
+  flex-wrap:wrap;
+}
+.action-buttons-group{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+  align-items:center;
+}
+.nav-btn{
+  background:#ffffff;
+  border:1.5px solid var(--border-light);
+  color:var(--dark);
+  height:42px;
+  padding:0 18px;
+  border-radius:999px;
+  font-size:13.5px;
+  font-weight:600;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  text-decoration:none;
+  cursor:pointer;
+  box-shadow:0 2px 8px rgba(220, 180, 195, 0.08);
+  transition:all 0.2s ease;
+  user-select:none;
+  font-family:var(--font-main);
+}
+.nav-btn:hover{
+  transform:translateY(-2px);
+  border-color:var(--pink-border);
+  background:#fff8fa;
+  box-shadow:0 6px 16px rgba(220, 180, 195, 0.18);
+}
+.nav-btn:active{
+  transform:scale(0.98);
+}
+.icon-box{
+  width:22px;
+  height:22px;
+  border-radius:6px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  flex-shrink:0;
+}
+.icon-box.pink{background:#ff7fa9;}
+.icon-box.green{background:#22c55e;}
+.icon-box.blue{background:#3b82f6;}
+.icon-box.outline-blue{
+  background:transparent;
+  border:1.5px solid #3b82f6;
+}
+.icon-box.outline-slate{
+  background:transparent;
+  border:1.5px solid #64748b;
+}
+.nav-heart{
+  margin-left:2px;
+}
+.nav-heads-wrap{
+  display:flex;
+  align-items:center;
+}
+.nav-heads-img{
+  height:58px;
+  pointer-events:none;
+  user-select:none;
+  filter:drop-shadow(0 2px 6px rgba(255, 182, 193, 0.2));
+}
+
+/* Status Badge Dot */
+.status-badge-dot{
+  display:none;
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:#9ca3af;
+  vertical-align:middle;
+  margin-left:2px;
+  transition:background-color .3s,box-shadow .3s;
+}
+.status-badge-dot.connected{
+  background:#22c55e;
+  box-shadow:0 0 6px rgba(34,197,94,.7);
+}
+.status-badge-dot.error{
+  background:#ef4444;
+}
+.status-badge-dot.loading{
+  background:#eab308;
+}
+
+/* Toolbar: Search and Add Pattern */
+.toolbar-row{
+  display:flex;
+  gap:16px;
+  align-items:center;
+  margin-bottom:12px;
+}
+.search-box{
+  flex:1;
+  position:relative;
+}
+.search-input{
+  width:100%;
+  height:64px;
+  border-radius:999px;
+  border:2px solid #f6cfde;
+  background:#ffffff;
+  padding:0 72px 0 56px;
+  font-size:15px;
+  color:var(--dark);
+  box-shadow:0 4px 18px rgba(240, 160, 190, 0.14);
+  outline:none;
+  transition:all 0.2s ease;
+  font-family:var(--font-main);
+}
+.search-input:focus{
+  border-color:var(--pink-primary);
+  box-shadow:0 0 0 4px rgba(255, 123, 168, 0.18);
+}
+.search-input::placeholder{
+  color:#b59fa8;
+}
+.search-icon-wrap{
+  position:absolute;
+  left:20px;
+  top:50%;
+  transform:translateY(-50%);
+  display:flex;
+  align-items:center;
+  pointer-events:none;
+  color:#ff6097;
+}
+.search-ribbon-img{
+  position:absolute;
+  right:24px;
+  top:50%;
+  transform:translateY(-50%);
+  height:26px;
+  pointer-events:none;
+}
+.search-clear{
+  position:absolute;
+  right:58px;
+  top:50%;
+  transform:translateY(-50%);
+  background:none;
+  border:none;
+  color:#b59fa8;
+  cursor:pointer;
+  font-size:16px;
+  display:none;
+  padding:4px;
+  border-radius:50%;
+}
+.search-clear:hover{
+  color:#ff6097;
+}
+
+/* Add Pattern Button */
+.btn-add-pattern{
+  height:64px;
+  border-radius:999px;
+  padding:0 22px 0 26px;
+  background:linear-gradient(135deg, #ff7aa8, #ff8eb8);
+  color:#ffffff;
+  border:none;
+  font-size:16px;
+  font-weight:700;
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  cursor:pointer;
+  box-shadow:0 6px 18px rgba(255, 123, 168, 0.32);
+  white-space:nowrap;
+  transition:all 0.2s ease;
+  user-select:none;
+  font-family:var(--font-main);
+}
+.btn-add-pattern:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 22px rgba(255, 123, 168, 0.42);
+}
+.btn-add-pattern:active{
+  transform:scale(0.98);
+}
+.add-melody-img{
+  height:38px;
+  pointer-events:none;
+}
+
+/* Categories Row */
+.categories-wrap{
+  display:flex;
+  gap:10px;
+  overflow-x:auto;
+  padding:4px 0 6px 0;
+  margin-bottom:4px;
+  scrollbar-width:none;
+  -ms-overflow-style:none;
+}
+.categories-wrap::-webkit-scrollbar{
+  display:none;
+}
+.cat-btn{
+  white-space:nowrap;
+  background:#ffffff;
+  border:1.5px solid var(--border-light);
+  color:var(--dark);
+  padding:10px 18px;
+  height:50px;
+  border-radius:999px;
+  cursor:pointer;
+  font-size:14.5px;
+  font-weight:600;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  box-shadow:0 2px 8px rgba(220, 180, 195, 0.08);
+  transition:all 0.2s ease;
+  position:relative;
+  user-select:none;
+  font-family:var(--font-main);
+}
+.cat-btn:hover{
+  background:#fff5f8;
+  border-color:var(--pink-border);
+  color:#ff6097;
+}
+.cat-btn.active{
+  background:linear-gradient(135deg, #ff7aa8, #ff8eb8);
+  color:#ffffff;
+  border-color:var(--pink-primary);
+  box-shadow:0 4px 14px rgba(255, 123, 168, 0.35);
+}
+.cat-ribbon-img{
+  position:absolute;
+  top:-14px;
+  left:-10px;
+  height:32px;
+  pointer-events:none;
+  z-index:3;
+}
+.cat-count{
+  display:inline-block;
+  background:#f0eaf2;
+  color:#6b5c68;
+  padding:2px 8px;
+  border-radius:999px;
+  font-size:12.5px;
+  font-weight:600;
+  margin-left:4px;
+}
+.cat-btn.active .cat-count{
+  background:rgba(255, 255, 255, 0.35);
+  color:#ffffff;
+}
+
+/* Stats Row */
+.stats-bar{
+  font-size:14px;
+  color:var(--muted);
+  font-weight:500;
+  margin:12px 0 14px 2px;
+}
+
+/* Cards Grid */
+.cards-grid{
+  display:grid;
+  grid-template-columns:repeat(3, 1fr);
+  gap:24px;
+  margin-bottom:40px;
+}
+
+/* Card Base */
+.card{
+  background:#ffffff;
+  border-radius:28px;
+  padding:24px 26px 20px 26px;
+  box-shadow:var(--shadow-card);
+  display:flex;
+  flex-direction:column;
+  height:440px;
+  min-height:440px;
+  position:relative;
+  transition:transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.22s ease;
+}
+.card:hover{
+  transform:translateY(-4px);
+}
+.card-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:10px;
+  position:relative;
+  z-index:2;
+  min-height:32px;
+}
+.title{
+  font-weight:700;
+  font-size:19px;
+  line-height:1.35;
+  color:var(--dark);
+  flex:1;
+  word-break:break-word;
+}
+.badge-wrap{
+  margin-top:6px;
+  margin-bottom:6px;
+  position:relative;
+  z-index:2;
+}
+.badge{
+  font-size:13px;
+  padding:4px 14px;
+  border-radius:999px;
+  display:inline-block;
+  font-weight:600;
+  word-break:break-word;
+}
+.content{
+  white-space:pre-wrap;
+  line-height:1.65;
+  color:var(--body-text);
+  font-size:15px;
+  margin:10px 0 6px 0;
+  display:-webkit-box;
+  -webkit-line-clamp:7;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+  flex:1;
+  word-break:break-word;
+  position:relative;
+  z-index:2;
+}
+.content.expanded{
+  display:block;
+  overflow:visible;
+  -webkit-line-clamp:unset;
+}
+.expand-btn{
+  background:none;
+  border:none;
+  padding:4px 0;
+  font-size:13.5px;
+  font-weight:700;
+  cursor:pointer;
+  text-align:center;
+  width:100%;
+  margin:4px 0 8px 0;
+  display:block;
+  transition:opacity 0.15s ease;
+  font-family:var(--font-main);
+  position:relative;
+  z-index:2;
+}
+.expand-btn:hover{
+  opacity:0.8;
+}
+.actions{
+  display:flex;
+  gap:10px;
+  margin-top:auto;
+  position:relative;
+  z-index:2;
+}
+.actions button{
+  flex:1;
+  height:44px;
+  border-radius:16px;
+  font-size:14px;
+  font-weight:700;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  transition:all 0.15s ease;
+  user-select:none;
+  font-family:var(--font-main);
+}
+.actions button:hover{
+  transform:translateY(-2px);
+  filter:brightness(0.97);
+}
+.actions button:active{
+  transform:scale(0.97);
+}
+
+/* Star Favorite Button */
+.star{
+  background:none;
+  border:0;
+  padding:0;
+  cursor:pointer;
+  line-height:1;
+  transition:transform 0.15s ease, filter 0.15s ease;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.star:hover{
+  transform:scale(1.15);
+}
+.theme-melody .star{color:#ff9cb9;}
+.theme-cinnamon .star{color:#9ed4fd;}
+.theme-duo .star{color:#c9b4e8;}
+.star.on .star-icon{
+  fill:#f59e0b !important;
+  stroke:#f59e0b !important;
+  filter:drop-shadow(0 2px 6px rgba(245, 158, 11, 0.4));
+}
+
+/* Card Stickers */
+.card-sticker{
+  position:absolute;
+  pointer-events:none;
+  user-select:none;
+  z-index:3;
+}
+
+/* Theme 1: Melody (Pink) */
+.card.theme-melody{
+  border:2.5px solid var(--pink-border);
+}
+.card.theme-melody:hover{
+  box-shadow:0 14px 32px rgba(255, 181, 203, 0.35);
+}
+.card.theme-melody .card-top .title{
+  padding-left:78px;
+}
+.card.theme-melody .expand-btn{
+  margin-left:78px;
+  width:calc(100% - 78px);
+}
+.card.theme-melody .actions{
+  margin-left:78px;
+}
+.sticker-melody-top{
+  top:-24px;
+  left:14px;
+  height:58px;
+}
+.sticker-melody-bottom{
+  bottom:12px;
+  left:8px;
+  height:110px;
+}
+.badge-melody{
+  background:#fff0f5;
+  border:1.5px solid #ffd1dc;
+  color:#ff6097;
+}
+.expand-btn-melody{color:#ff6097;}
+.btn-copy-melody{
+  background:#ff7aa8;
+  color:#ffffff;
+  border:none;
+}
+.btn-copy-melody:hover{background:#ff6899;}
+.btn-edit-melody{
+  background:#ffffff;
+  color:#ff6097;
+  border:1.5px solid #ffb5cb;
+}
+.btn-edit-melody:hover{background:#fff0f5;}
+.btn-del-melody{
+  background:#ffffff;
+  color:#5da3e6;
+  border:1.5px solid #bde0fe;
+}
+.btn-del-melody:hover{background:#f0f7ff;}
+
+/* Theme 2: Cinnamon (Sky Blue) */
+.card.theme-cinnamon{
+  border:2.5px solid var(--blue-border);
+}
+.card.theme-cinnamon:hover{
+  box-shadow:0 14px 32px rgba(158, 212, 253, 0.4);
+}
+.card.theme-cinnamon .card-top .title{
+  padding-left:70px;
+}
+.sticker-cinnamon-top{
+  top:-24px;
+  left:12px;
+  height:48px;
+}
+.sticker-cinnamon-bottom{
+  bottom:58px;
+  left:16px;
+  height:68px;
+}
+.badge-cinnamon{
+  background:#eaf6fd;
+  border:1.5px solid #bce1fd;
+  color:#2c8ec9;
+}
+.expand-btn-cinnamon{color:#389ad6;}
+.btn-copy-cinnamon{
+  background:#6cb5f9;
+  color:#ffffff;
+  border:none;
+}
+.btn-copy-cinnamon:hover{background:#5baef7;}
+.btn-edit-cinnamon{
+  background:#ffffff;
+  color:#389ad6;
+  border:1.5px solid #a8d7fc;
+}
+.btn-edit-cinnamon:hover{background:#eaf6fd;}
+.btn-del-cinnamon{
+  background:#ffffff;
+  color:#5da3e6;
+  border:1.5px solid #bde0fe;
+}
+.btn-del-cinnamon:hover{background:#f0f7ff;}
+
+/* Theme 3: Duo (Lavender / Purple) */
+.card.theme-duo{
+  border:2.5px solid var(--purple-border);
+}
+.card.theme-duo:hover{
+  box-shadow:0 14px 32px rgba(201, 180, 232, 0.42);
+}
+.card.theme-duo .card-top .title{
+  padding-left:10px;
+  margin-top:6px;
+}
+.sticker-duo-top{
+  top:-24px;
+  left:14px;
+  height:50px;
+}
+.sticker-duo-bot-left{
+  bottom:58px;
+  left:14px;
+  height:62px;
+}
+.sticker-duo-bot-right{
+  bottom:46px;
+  right:10px;
+  height:68px;
+}
+.badge-duo{
+  background:#fff1f4;
+  border:1.5px solid #ffd1dc;
+  color:#e64a75;
+}
+.expand-btn-duo{color:#8c6ebd;}
+.btn-copy-duo{
+  background:#ad93db;
+  color:#ffffff;
+  border:none;
+}
+.btn-copy-duo:hover{background:#9d82cc;}
+.btn-edit-duo{
+  background:#ffffff;
+  color:#8c6ebd;
+  border:1.5px solid #c9b4e8;
+}
+.btn-edit-duo:hover{background:#f8f4fc;}
+.btn-del-duo{
+  background:#ffffff;
+  color:#5da3e6;
+  border:1.5px solid #bde0fe;
+}
+.btn-del-duo:hover{background:#f0f7ff;}
+
+/* Empty State */
+.empty{
+  text-align:center;
+  padding:60px 20px;
+  color:var(--muted);
+  font-size:16px;
+  grid-column:1/-1;
+}
+
+/* Modals */
+.modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(60, 35, 45, 0.45);
+  backdrop-filter:blur(4px);
+  align-items:center;
+  justify-content:center;
+  padding:16px;
+  z-index:100;
+}
+.modal.show{display:flex}
+.modal-box{
+  background:#ffffff;
+  width:min(680px,100%);
+  max-height:90vh;
+  overflow-y:auto;
+  border-radius:28px;
+  padding:28px;
+  border:2px solid var(--pink-border);
+  box-shadow:0 20px 50px rgba(180, 120, 145, 0.25);
+  animation:popIn .2s ease-out;
+}
+@keyframes popIn{
+  from{transform:scale(.95);opacity:0}
+  to{transform:scale(1);opacity:1}
+}
+.modal-title{
+  margin:0 0 16px;
+  font-size:22px;
+  color:var(--dark);
+  font-weight:700;
+}
+label{
+  display:block;
+  font-weight:700;
+  margin:12px 0 6px;
+  font-size:14px;
+}
+input,textarea,select{
+  width:100%;
+  padding:12px;
+  border:1.5px solid var(--border-light);
+  border-radius:14px;
+  outline:none;
+  background:#fff;
+  transition:border-color .2s;
+  font-family:var(--font-main);
+  font-size:14px;
+}
+input:focus,textarea:focus,select:focus{
+  border-color:var(--pink-primary);
+  box-shadow:0 0 0 3px rgba(255, 123, 168, 0.15);
+}
+textarea{min-height:180px;resize:vertical;line-height:1.5}
+.custom-category-wrap{margin-top:8px;display:none}
+.sheet-sync-option{
+  margin-top:14px;
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+  font-size:13px;
+  color:var(--dark);
+}
+.sheet-sync-option label{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin:0;
+  cursor:pointer;
+  font-weight:600;
+}
+.sheet-sync-option input{width:auto;cursor:pointer}
+.sheet-sync-hint{font-size:12px;color:var(--muted);margin-left:24px}
+.modal-actions{display:flex;gap:10px;margin-top:20px}
+.modal-actions button{flex:1;padding:12px}
+
+/* Toast */
+.toast{
+  position:fixed;
+  right:24px;
+  bottom:28px;
+  background:rgba(55, 30, 42, 0.92);
+  color:white;
+  padding:13px 22px;
+  border-radius:16px;
+  display:none;
+  z-index:200;
+  font-weight:600;
+  box-shadow:0 8px 24px rgba(0,0,0,.2);
+  pointer-events:none;
+  animation:toastIn .2s ease-out;
+}
+@keyframes toastIn{
+  from{transform:translateY(15px);opacity:0}
+  to{transform:translateY(0);opacity:1}
+}
+
+/* Responsive Media Queries */
+@media(max-width:1200px){
+  .cards-grid{grid-template-columns:repeat(2, 1fr);}
+}
+@media(max-width:768px){
+  .main-wrapper{padding:0 16px 40px 16px;}
+  .cards-grid{grid-template-columns:1fr;}
+  .toolbar-row{flex-direction:column;align-items:stretch;}
+  .btn-add-pattern{justify-content:center;}
+  .action-bar-row{flex-direction:column;align-items:flex-start;}
+  .action-buttons-group{width:100%;}
+  .action-buttons-group .nav-btn{flex:1;justify-content:center;}
+  .nav-heads-wrap{align-self:flex-end;margin-top:-8px;}
+  .card.theme-melody .actions{padding-left:0;}
+  .sticker-melody-bottom{display:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- Background Floating Decorations matching S8192023 -->
+<div class="bg-decorations">
+  <div class="bg-decor bg-heart-pink" style="top:240px;left:16px;">💕</div>
+  <div class="bg-decor bg-heart-pink" style="top:330px;left:12px;">💗</div>
+  <div class="bg-decor bg-heart-pink" style="top:860px;left:14px;">💕</div>
+  <div class="bg-decor bg-heart-blue" style="top:235px;right:280px;">🩵</div>
+  <div class="bg-decor bg-heart-pink" style="top:390px;right:16px;">💗</div>
+  <div class="bg-decor bg-heart-pink" style="top:880px;right:20px;">💕</div>
+  <svg class="bg-decor bg-cloud" style="top:465px;left:34%;width:80px;height:45px;" viewBox="0 0 100 60" fill="#e0f2fe"><path d="M20 45 A15 15 0 0 1 35 25 A20 20 0 0 1 70 25 A15 15 0 0 1 85 45 Z"/></svg>
+  <svg class="bg-decor bg-cloud" style="top:460px;left:67%;width:90px;height:50px;" viewBox="0 0 100 60" fill="#fce7f3"><path d="M20 45 A15 15 0 0 1 35 25 A20 20 0 0 1 70 25 A15 15 0 0 1 85 45 Z"/></svg>
+  <svg class="bg-decor bg-cloud" style="top:460px;right:10px;width:75px;height:45px;" viewBox="0 0 100 60" fill="#e0f2fe"><path d="M20 45 A15 15 0 0 1 35 25 A20 20 0 0 1 70 25 A15 15 0 0 1 85 45 Z"/></svg>
+</div>
+
+<!-- Header Banner -->
+<header class="header-banner">
+  <img src="assets/banner.png" alt="Bugfinn Pattern Manager - My Melody x Cinnamoroll" class="banner-img">
+</header>
+
+<main class="main-wrapper">
+  <!-- Top Action Buttons Row -->
+  <div class="action-bar-row">
+    <div class="action-buttons-group">
+      <a href="page2.html" class="nav-btn" title="ไปหน้าคำนวณค่างวด">
+        <span class="icon-box pink">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+        </span>
+        คำนวณค่างวด
+      </a>
+      <button type="button" class="nav-btn" id="sheetSettingsBtn" title="ตั้งค่าการเชื่อมต่อ Google Sheet">
+        <span class="icon-box green">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 19H5v-4h4v4zm0-6H5V9h4v4zm0-6H5V5h4v2zm6 12h-4v-4h4v4zm0-6h-4V9h4v4zm0-6h-4V5h4v2zm6 12h-4v-4h4v4zm0-6h-4V9h4v4zm0-6h-4V5h4v2z"/></svg>
+        </span>
+        ตั้งค่า Google Sheet <span id="sheetStatusDot" class="status-badge-dot" title="สถานะเชื่อมต่อ Google Sheet"></span> <span class="nav-heart">💕</span>
+      </button>
+      <button type="button" class="nav-btn" id="syncBtn" title="ดึงข้อมูล Pattern ล่าสุดจาก Google Sheet หรือส่วนกลาง">
+        <span class="icon-box blue">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46A7.93 7.93 0 0 0 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74A7.93 7.93 0 0 0 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/></svg>
+        </span>
+        ซิงค์ข้อมูล
+      </button>
+      <button type="button" class="nav-btn" id="exportBtn">
+        <span class="icon-box outline-blue">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+        </span>
+        ส่งออก (Export)
+      </button>
+      <button type="button" class="nav-btn" id="importBtn">
+        <span class="icon-box outline-blue">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        </span>
+        นำเข้า (Import)
+      </button>
+      <input type="file" id="importFileInput" accept=".json" style="display:none">
+      <button type="button" class="nav-btn" id="resetBtn">
+        <span class="icon-box outline-slate">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+        </span>
+        รีเซ็ตข้อมูล
+      </button>
+    </div>
+    <div class="nav-heads-wrap">
+      <img src="assets/nav_heads.png" alt="My Melody & Cinnamoroll" class="nav-heads-img">
+    </div>
+  </div>
+
+  <!-- Toolbar: Search and Add Pattern -->
+  <div class="toolbar-row">
+    <div class="search-box">
+      <span class="search-icon-wrap">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ff6097" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      </span>
+      <input id="search" class="search-input" placeholder="ค้นหา เช่น ดาวน์, NPL, iPhone, เอกสาร..." autocomplete="off">
+      <button type="button" id="searchClear" class="search-clear" title="ล้างการค้นหา">✕</button>
+      <img src="assets/search_ribbon.png" alt="Ribbon" class="search-ribbon-img">
+    </div>
+    <button type="button" id="addPatternBtn" class="btn-add-pattern">
+      + เพิ่ม Pattern
+      <img src="assets/add_melody.png" alt="Melody" class="add-melody-img">
+    </button>
+  </div>
+
+  <!-- Categories Filter Chips -->
+  <div id="cats" class="categories-wrap"></div>
+
+  <!-- Stats Bar -->
+  <div class="stats-bar">
+    <span id="statsCount">กำลังโหลด...</span>
+  </div>
+
+  <!-- Cards Grid -->
+  <div id="grid" class="cards-grid"></div>
+</main>
+
+<!-- Modal เพิ่ม/แก้ไข Pattern -->
+<div id="modal" class="modal">
+  <div class="modal-box">
+    <h2 id="modalTitle" class="modal-title">เพิ่ม Pattern</h2>
+    <input type="hidden" id="editId">
+    
+    <label for="name">ชื่อ Pattern</label>
+    <input id="name" placeholder="เช่น แจ้งลูกค้าเครดิตผ่าน" required autocomplete="off">
+
+    <label for="category">หมวดหมู่</label>
+    <select id="category"></select>
+    
+    <div id="customCategoryWrap" class="custom-category-wrap">
+      <input id="customCategory" placeholder="พิมพ์ชื่อหมวดหมู่ใหม่ที่นี่..." autocomplete="off">
+    </div>
+
+    <label for="content">ข้อความ Pattern</label>
+    <textarea id="content" placeholder="ใส่ข้อความที่ต้องการคัดลอก..."></textarea>
+
+    <div class="sheet-sync-option" id="sheetOptionContainer">
+      <label>
+        <input type="checkbox" id="sendToSheet" checked>
+        <span>📊 บันทึกลง Google Sheet ทันที (ทุกคนในทีมจะเห็นข้อมูลพร้อมกัน)</span>
+      </label>
+      <div class="sheet-sync-hint" id="sheetSyncHint">
+        (บันทึกข้อมูลเข้า Google Sheet อัตโนมัติแบบ Real-time ทันทีที่กดบันทึก)
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button type="button" id="cancelModalBtn" class="nav-btn" style="justify-content:center;">ยกเลิก</button>
+      <button type="button" id="savePatternBtn" class="btn-add-pattern" style="justify-content:center;height:44px;">บันทึก</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal ตั้งค่า Google Sheet -->
+<div id="sheetSettingsModal" class="modal">
+  <div class="modal-box" style="max-width:620px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <h2 style="margin:0;font-size:20px;color:var(--dark)">📊 ตั้งค่าเชื่อมต่อ Google Sheet</h2>
+      <button type="button" id="closeSheetSettingsBtn" style="background:none;border:none;font-size:22px;cursor:pointer;color:var(--muted);padding:0 4px">✕</button>
+    </div>
+
+    <div style="background:#fff0f5;border:1.5px solid var(--pink-border);padding:12px 14px;border-radius:16px;margin-bottom:14px;font-size:13.5px;line-height:1.6">
+      💡 <strong>เชื่อมต่อ Google Sheet:</strong> เพื่อให้ทีมงานทุกคนบันทึก, แก้ไข, และเรียกดู Pattern ชุดเดียวกันจาก Google Sheet ได้โดยตรง
+    </div>
+
+    <label for="sheetApiUrl">URL เว็บแอป (Google Apps Script Web App URL)</label>
+    <input id="sheetApiUrl" value="https://script.google.com/macros/s/AKfycbxtDl7h6CWp7aMSzbV4sCtmqIZjD4b3JajgSg8o8nN0u8uBScWiJ7ubscBsTlgErn3t6w/exec" placeholder="https://script.google.com/macros/s/AKfycb.../exec" autocomplete="off">
+    <div id="sheetStatusMsg" style="font-size:12px;margin-top:6px;min-height:18px;color:var(--muted)"></div>
+
+    <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">
+      <button type="button" id="saveSheetUrlBtn" class="btn-add-pattern" style="flex:1;height:44px;justify-content:center;">💾 บันทึก URL</button>
+      <button type="button" id="testSheetBtn" class="nav-btn" style="flex:1;justify-content:center;">🔍 ทดสอบเชื่อมต่อ</button>
+      <button type="button" id="resetSheetUrlBtn" class="nav-btn" style="flex:1;justify-content:center;" title="คืนค่าเป็น URL เริ่มต้นของระบบ">↺ คืนค่าเดิม</button>
+      <button type="button" id="uploadAllToSheetBtn" class="nav-btn" style="flex:1;justify-content:center;" title="ส่งข้อมูล Pattern ทั้งหมดในเครื่องขึ้นไปเก็บใน Google Sheet">📤 นำข้อมูลทั้งหมดขึ้น Sheet</button>
+    </div>
+
+    <hr style="border:0;border-top:1px solid var(--border-light);margin:20px 0 16px">
+
+    <details style="font-size:13px;line-height:1.6;color:var(--dark)">
+      <summary style="cursor:pointer;font-weight:700;color:#ff6097;padding:4px 0">📖 วิธีสร้าง Google Sheet &amp; รับ URL (ทำครั้งเดียว 2 นาที)</summary>
+      <div style="margin-top:10px;padding:14px;background:#fff8fa;border-radius:14px;border:1px solid var(--border-light)">
+        <ol style="margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px">
+          <li>สร้าง Google Sheet ใหม่ที่ <a href="https://sheets.new" target="_blank" style="color:#ff6097;font-weight:600">sheets.new</a></li>
+          <li>ไปที่เมนู <strong>ส่วนขยาย (Extensions)</strong> &gt; <strong>Apps Script</strong></li>
+          <li>ลบโค้ดเดิมใน <code>Code.gs</code> แล้ววางโค้ด Apps Script ลงไป</li>
+          <li>กดปุ่ม <strong>ทำให้ใช้งานได้ (Deploy)</strong> &gt; <strong>การทำให้ใช้งานได้รายการใหม่ (New deployment)</strong></li>
+          <li>เลือกประเภท <strong>เว็บแอป (Web app)</strong>
+            <div style="font-size:12px;color:var(--muted);margin-top:2px">• ทำงานในฐานะ: <strong>ตัวฉัน (Me)</strong><br>• ผู้ที่มีสิทธิ์เข้าถึง: <strong style="color:var(--danger)">ทุกคน (Anyone)</strong> *(สำคัญมาก!)*</div>
+          </li>
+          <li>กด <strong>ทำให้ใช้งานได้</strong> ให้สิทธิ์เข้าถึง และคัดลอก <strong>URL เว็บแอป (Web App URL)</strong> มาวางในช่องด้านบนนี้</li>
+        </ol>
+        <div style="margin-top:14px;display:flex;gap:8px">
+          <button type="button" id="copyAppsScriptBtn" class="nav-btn" style="font-size:12px;flex:1;justify-content:center;">📋 คัดลอกโค้ด Apps Script</button>
+          <a href="google-apps-script.js" target="_blank" class="nav-btn" style="font-size:12px;flex:1;text-decoration:none;justify-content:center;">📄 ดูไฟล์โค้ด (google-apps-script.js)</a>
+        </div>
+      </div>
+    </details>
+  </div>
+</div>
+
+<div id="toast" class="toast">คัดลอกแล้ว ✓</div>
+
+<script>
+
+const GITHUB_REPO = "BimintandPalm/-Bimint";
+const GITHUB_RAW_URL = `https://raw.githubusercontent.com/${GITHUB_REPO}/main/patterns.json`;
+const SHEET_URL_KEY = "bugfinn_sheet_url";
+
+// URL เริ่มต้นของ Google Apps Script Web App ที่เชื่อมต่อโดยตรง
+const DEFAULT_SHEET_API_URL = "https://script.google.com/macros/s/AKfycbxtDl7h6CWp7aMSzbV4sCtmqIZjD4b3JajgSg8o8nN0u8uBScWiJ7ubscBsTlgErn3t6w/exec";
+let GOOGLE_SHEET_API_URL = DEFAULT_SHEET_API_URL;
+
+try {
+  const saved = localStorage.getItem(SHEET_URL_KEY);
+  if (saved === "__OFFLINE__") {
+    GOOGLE_SHEET_API_URL = "";
+  } else if (saved && saved.startsWith("http") && saved !== DEFAULT_SHEET_API_URL) {
+    GOOGLE_SHEET_API_URL = saved;
+  } else {
+    GOOGLE_SHEET_API_URL = DEFAULT_SHEET_API_URL;
+    localStorage.setItem(SHEET_URL_KEY, DEFAULT_SHEET_API_URL);
+  }
+} catch (e) {}
+
+// โค้ด Apps Script สำหรับปุ่มคัดลอกในหน้าเว็บ
+const APPS_SCRIPT_CODE = `const SHEET_NAME = "Patterns";
+
+function getOrCreateSheet() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let sheet = ss.getSheetByName(SHEET_NAME);
+  if (!sheet) {
+    sheet = ss.getSheets()[0];
+    sheet.setName(SHEET_NAME);
+  }
+  if (sheet.getLastRow() === 0) {
+    sheet.appendRow(["ID", "ชื่อ Pattern", "หมวดหมู่", "ข้อความ", "รายการโปรด", "อัปเดตล่าสุด"]);
+    const headerRange = sheet.getRange(1, 1, 1, 6);
+    headerRange.setFontWeight("bold").setBackground("#ead5da").setFontColor("#49363b");
+    sheet.setFrozenRows(1);
+  }
+  return sheet;
+}
+
+function jsonOutput(obj) {
+  return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
+}
+
+function doGet(e) {
+  try {
+    const sheet = getOrCreateSheet();
+    const rows = sheet.getDataRange().getValues();
+    if (rows.length <= 1) return jsonOutput({ status: "success", count: 0, data: [] });
+    const data = [];
+    for (let i = 1; i < rows.length; i++) {
+      const row = rows[i];
+      if (!row[0] && !row[1]) continue;
+      data.push({
+        id: String(row[0] || ("p_" + i)),
+        name: String(row[1] || ""),
+        category: String(row[2] || "📌 อื่น ๆ"),
+        content: String(row[3] || ""),
+        fav: String(row[4]).toLowerCase() === "true" || row[4] === true,
+        updated_at: row[5] ? String(row[5]) : ""
+      });
+    }
+    return jsonOutput({ status: "success", count: data.length, data: data });
+  } catch (err) {
+    return jsonOutput({ status: "error", message: err.toString() });
+  }
+}
+
+function doPost(e) {
+  try {
+    let payload = {};
+    if (e.postData && e.postData.contents) {
+      try { payload = JSON.parse(e.postData.contents); } catch(ex) { payload = e.parameter || {}; }
+    } else if (e.parameter) {
+      payload = e.parameter;
+    }
+    const action = payload.action || "add";
+    const sheet = getOrCreateSheet();
+    const nowStr = Utilities.formatDate(new Date(), "Asia/Bangkok", "yyyy-MM-dd HH:mm:ss");
+
+    if (action === "add") {
+      const item = payload.item || payload;
+      const id = String(item.id || ("p_" + new Date().getTime()));
+      const name = String(item.name || "").trim();
+      const category = String(item.category || "📌 อื่น ๆ").trim();
+      const content = String(item.content || "");
+      const fav = item.fav ? true : false;
+      const rows = sheet.getDataRange().getValues();
+      let foundRow = -1;
+      for (let i = 1; i < rows.length; i++) {
+        if (String(rows[i][0]) === id || (name && String(rows[i][1]) === name)) {
+          foundRow = i + 1;
+          break;
+        }
+      }
+      if (foundRow > 0) {
+        sheet.getRange(foundRow, 1, 1, 6).setValues([[id, name, category, content, fav, nowStr]]);
+        return jsonOutput({ status: "success", action: "updated", id: id });
+      } else {
+        sheet.appendRow([id, name, category, content, fav, nowStr]);
+        return jsonOutput({ status: "success", action: "added", id: id });
+      }
+    }
+
+    if (action === "update" || action === "edit") {
+      const item = payload.item || payload;
+      const id = String(item.id || "");
+      const name = String(item.name || "").trim();
+      const rows = sheet.getDataRange().getValues();
+      let foundRow = -1;
+      for (let i = 1; i < rows.length; i++) {
+        if ((id && String(rows[i][0]) === id) || (!id && name && String(rows[i][1]) === name)) {
+          foundRow = i + 1;
+          break;
+        }
+      }
+      if (foundRow > 0) {
+        const curFav = rows[foundRow - 1][4];
+        const newFav = item.fav !== undefined ? item.fav : curFav;
+        sheet.getRange(foundRow, 1, 1, 6).setValues([[
+          id || rows[foundRow - 1][0],
+          name || rows[foundRow - 1][1],
+          item.category !== undefined ? item.category : rows[foundRow - 1][2],
+          item.content !== undefined ? item.content : rows[foundRow - 1][3],
+          newFav,
+          nowStr
+        ]]);
+        return jsonOutput({ status: "success", action: "updated", id: id });
+      } else {
+        sheet.appendRow([id || ("p_" + new Date().getTime()), name, item.category || "📌 อื่น ๆ", item.content || "", !!item.fav, nowStr]);
+        return jsonOutput({ status: "success", action: "added_as_new" });
+      }
+    }
+
+    if (action === "delete") {
+      const id = String(payload.id || (payload.item && payload.item.id) || "");
+      const name = String(payload.name || (payload.item && payload.item.name) || "");
+      const rows = sheet.getDataRange().getValues();
+      let foundRow = -1;
+      for (let i = 1; i < rows.length; i++) {
+        if ((id && String(rows[i][0]) === id) || (name && String(rows[i][1]) === name)) {
+          foundRow = i + 1;
+          break;
+        }
+      }
+      if (foundRow > 0) {
+        sheet.deleteRow(foundRow);
+        return jsonOutput({ status: "success", action: "deleted", id: id });
+      } else {
+        return jsonOutput({ status: "warning", message: "not found" });
+      }
+    }
+
+    if (action === "batch_save" || action === "sync_all") {
+      const items = payload.items || [];
+      const lastRow = sheet.getLastRow();
+      if (lastRow > 1) sheet.deleteRows(2, lastRow - 1);
+      if (items.length > 0) {
+        const rowsToAdd = items.map((x, idx) => [
+          String(x.id || ("p_" + (new Date().getTime() + idx))),
+          String(x.name || "").trim(),
+          String(x.category || "📌 อื่น ๆ").trim(),
+          String(x.content || ""),
+          x.fav ? true : false,
+          nowStr
+        ]);
+        sheet.getRange(2, 1, rowsToAdd.length, 6).setValues(rowsToAdd);
+      }
+      return jsonOutput({ status: "success", action: "batch_saved", count: items.length });
+    }
+
+    return jsonOutput({ status: "error", message: "Unknown action" });
+  } catch (err) {
+    return jsonOutput({ status: "error", message: err.toString() });
+  }
+}`;
+
+function updateSheetDotStatus(status, title){
+  const dot = $("sheetStatusDot");
+  if(!dot) return;
+  dot.className = "status-badge-dot " + (status || "");
+  dot.title = title || (status === "connected" ? "เชื่อมต่อ Google Sheet แล้ว" : "สถานะเชื่อมต่อ Google Sheet");
+}
+
+async function callSheetApi(action, payload = {}){
+  if(!GOOGLE_SHEET_API_URL) return null;
+  const postBody = JSON.stringify({ action, ...payload });
+  try{
+    const res = await fetch(GOOGLE_SHEET_API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: postBody
+    });
+    const result = await res.json();
+    if(result && result.status === "error"){
+      throw new Error(result.message || "เกิดข้อผิดพลาดจาก Google Sheet");
+    }
+    return result;
+  }catch(err){
+    console.warn("Direct POST failed, attempting no-cors fallback:", err);
+    try{
+      await fetch(GOOGLE_SHEET_API_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: postBody
+      });
+      return { status: "success", mode: "no-cors" };
+    }catch(err2){
+      console.error("Sheet API error:", err2);
+      throw err;
+    }
+  }
+}
+
+async function fetchOnlinePatternsFromSheet(){
+  if(!GOOGLE_SHEET_API_URL) return null;
+  const sep = GOOGLE_SHEET_API_URL.includes("?") ? "&" : "?";
+  const url = `${GOOGLE_SHEET_API_URL}${sep}action=get&v=${Date.now()}`;
+  const res = await fetch(url, { cache: "no-store" });
+  if(!res.ok) throw new Error("HTTP " + res.status);
+  const json = await res.json();
+  if(json && json.status === "success" && Array.isArray(json.data)){
+    return json.data;
+  }
+  throw new Error((json && json.message) || "รูปแบบข้อมูลจาก Sheet ไม่ถูกต้อง");
+}
+
+const defaultCategories = [
+  "🔍 ตรวจสอบเครดิต", "✅ เครดิตผ่าน", "❌ ไม่อนุมัติ", "💰 ดาวน์", 
+  "📱 iPhone 18 Series", "📝 เอกสาร", "🖊️ ขั้นตอนทำสัญญา", "💸 โอนยอด", 
+  "🔧 เครื่องมือ 1", "📦 เครื่องนอก", "💳 ค่าบริการ", "👋 ข้อความทั่วไป", "📌 อื่น ๆ"
+];
+
+const initial = [
+  ["ขอข้อมูลตรวจสอบเครดิต","🔍 ตรวจสอบเครดิต","เพื่อดำเนินการตรวจสอบเครดิต ขอทราบข้อมูลดังนี้\n- ชื่อ - นามสกุล\n- อาชีพ\n- รุ่นที่ลูกค้าสนใจทำผ่อน\n- ราคาเครื่อง\n- จำนวนเงินดาวน์"],
+  ["แจ้งเครดิตผ่าน","✅ เครดิตผ่าน","เบื้องต้นเครดิตลูกค้าผ่านค่ะ\n\nหากลูกค้าทำสัญญาต่อ หน้าร้านสร้างลิ้งค์ให้ลูกค้ากรอกข้อมูลและเพิ่มข้อมูลเครื่องเข้าระบบได้เลยนะคะ"],
+  ["ไม่อนุมัติ NPL","❌ ไม่อนุมัติ","📌 แจ้งผลตรวจสอบเครดิต\nเบื้องต้นบริษัทไม่สามารถอนุมัติสินเชื่อให้ลูกค้าได้ค่ะ\n\nสาเหตุ: ลูกค้ามีสถานะ NPL / มีบัญชีค้างชำระอยู่ระหว่างติดตาม จึงไม่ผ่านเกณฑ์สินเชื่อค่ะ"],
+  ["ไม่อนุมัติ Blacklist Seller","❌ ไม่อนุมัติ","เคสนี้แอดมินได้ตรวจสอบดูแล้ว ยังไม่สามารถปล่อยเครดิตให้ได้นะคะ เนื่องจากลูกค้ามีการติดแบล็คลิสต์เซลล์เลอร์ ต้องขออภัยด้วยค่ะ🙏"],
+  ["แจ้งดาวน์ 35%","💰 ดาวน์","แอดมินพิจารณาตามหลักฐานที่มีค่ะพี่ ตามเงื่อนไขของบริษัทนะคะ หากลูกค้าสะดวกดาวน์ 35% แจ้งได้เลยนะคะ"],
+  ["iPhone 18 Pro Max 256GB","📱 iPhone 18 Series","📱 iPhone 18 Pro Max 256GB\nราคาอ้างอิง 52,900 บาท\n• OVP ได้ประมาณ 5,000 บาท"],
+  ["iPhone 18 Pro 256GB","📱 iPhone 18 Series","📱 iPhone 18 Pro 256GB\nราคาอ้างอิง 48,900 บาท\n• OVP ได้ประมาณ 3,000 บาท"],
+  ["เงื่อนไข iPhone 18 Series","📱 iPhone 18 Series","💰 วางดาวน์เริ่มต้น 30%\nกรณีไม่สะดวก/ไม่มีเอกสาร: วางเงินดาวน์ 40%"],
+  ["แนวทางแจ้งร้านค้า iPhone 18","📱 iPhone 18 Series","📌 แนวทางแจ้งร้านค้า iPhone 18 Series\n\nแจ้งเฉพาะ วางดาวน์เริ่มต้น 30% ไม่ต้องแจ้งวงเงิน OVP และให้ถามราคาขายของร้านก่อน\n\n• ราคาไม่เกินเกณฑ์ → แจ้งว่าจัดได้\n• ราคาเกินเกณฑ์ → แจ้งราคาสูงสุดที่จัดได้"],
+  ["แจ้งยอดโอนรอบถัดไป","💸 โอนยอด","แอดมินขอแจ้งให้ทราบเบื้องต้นก่อนนะคะพี่ เนื่องจากวันนี้ยอดโอนปิดงานเต็มแล้วค่ะ หากเคสนี้เครดิตผ่านและทางร้านดำเนินการต่อ ร้านจะได้รับยอดเป็นรอบของวันที่ 04/11/2569 นะคะ ทางร้านสะดวกไหมคะ"],
+  ["แจ้งยอดโอนรอบวันที่ 17 กย. 69","💸 โอนยอด","แอดมินขอแจ้งให้ทราบเพิ่มเติมนะคะพี่ เนื่องจากวันนี้ยอดโอนปิดงานเต็มแล้วค่ะ ร้านจะได้รับยอดเป็นรอบของวันที่ 17 กย. 69 นะคะ ทางร้านสะดวกไหมคะ"],
+  ["เอกสารเรียบร้อย / แจ้งวันโอน","💸 โอนยอด","BUG0000*** เอกสารเรียบร้อยค่ะพี่ ส่วนอนุมัติสัญญาและโอนยอดจะเป็นวันที่ 19/09/2569 ขอบพระคุณค่ะ"],
+  ["หมายเหตุ เครื่องมือ 1","🔧 เครื่องมือ 1","📌 หมายเหตุ (เครื่องมือ 1):\n• ร้านต้องเก็บกล่องเครื่องมือหนึ่งไว้ให้ลูกค้า\n• เมื่อลูกค้าผ่อนหมดให้มารับที่ร้านค้า"],
+  ["Statement ไม่สัมพันธ์กับค่างวด","💰 ดาวน์","แอดมินตรวจสอบแล้ว statement ลูกค้ายังไม่สัมพันธ์กับค่างวดค่ะ ลูกค้าสะดวกดาวน์ 35% ไหมคะ"],
+  ["อายุไม่ถึง 20 ปี","📝 เอกสาร","ในกรณีที่อายุไม่ถึง 20 ปีบริบูรณ์จะต้องมีผู้ปกครองเป็นผู้เซ็นยินยอมนะคะ"],
+  ["ขอภาพการทำงาน","📝 เอกสาร","ลูกค้ามีภาพการทำงานหรือหลักฐานการทำงานไหมคะ ส่งเข้ามาในแชทได้เลยนะคะ"],
+  ["เครื่องนอกผ่อนสูงสุด 9 เดือน","📦 เครื่องนอก","ขออนุญาตแจ้งเพิ่มเติมนะคะ เครื่องนอกผ่อนสูงสุด 9 เดือนค่ะ"],
+  ["เพิ่มเพื่อนไฟแนนซ์","🖊️ ขั้นตอนทำสัญญา","รบกวนแจ้งลูกค้าเพิ่มเพื่อนไฟแนนซ์เข้ามาหน่อยนะคะ\n\nhttps://www.facebook.com/profile.php?id=61594188324871"],
+  ["ข้อความต้อนรับ","👋 ข้อความทั่วไป","สวัสดีค่ะ Bugfinn Finance ยินดีให้บริการค่ะ🧡"],
+  ["ไม่อนุมัติ NPL (อีกแบบ)","❌ ไม่อนุมัติ","เคสนี้แอดมินตรวจสอบแล้วยังไม่สามารถปล่อยเครดิตให้ได้นะคะ เนื่องจากลูกค้ามีประวัติการค้างชำระค่างวด (สถานะ NPL) ต้องขออภัยในความไม่สะดวกด้วยค่ะ"],
+  ["ส่วนลดปิดก่อนกำหนด","💳 ค่าบริการ","ปิดก่อนงวดที่ 1 ลด 20%\nปิดก่อนงวดที่ 2 ลด 15%\nปิดตั้งแต่งวดที่ 3 ขึ้นไปลด 10% ค่ะ"],
+  ["ขั้นตอนหลังตรวจสอบผ่าน","✅ เครดิตผ่าน","หากดำเนินการขั้นตอนนี้เรียบร้อยแล้ว หน้าร้านสามารถดำเนินการต่อได้ด้วยตัวเองตามขั้นตอนที่แอดมินส่งให้ได้เลยนะคะ จะเป็นขั้นตอนการสร้างลิงค์ เซ็นสัญญาและยืนยันการรับสินค้าค่ะ"],
+  ["ไม่สามารถตรวจสอบ / ดาวน์ 35%","💰 ดาวน์","เนื่องจากแอดมินไม่สามารถตรวจสอบได้ ตามเงื่อนไขของบริษัทต้องวางดาวน์ 35% เพื่อดำเนินการต่อนะคะ"],
+  ["เปลี่ยนรอบชำระ","💳 ค่าบริการ","เปลี่ยนรอบชำระ ค่าบริการ 300 บาท\n\nช่องทางโอนเงิน\nธนาคารกรุงไทย\nเลขบัญชี 6630313410\nชื่อบัญชี อรรถพล บุตรพรม\n\nหากโอนแล้วส่งสลิปให้ทางแอดมินตรวจสอบได้เลยค่ะ"],
+  ["ขอปลดล็อกเครื่อง","💳 ค่าบริการ","เรื่อง: แจ้งขอปลดล็อกเครื่อง - ลูกค้าต้องการเปลี่ยนเครื่อง\nเลขที่สัญญา: BUG0000782\nชื่อ-สกุล: วรวุฒิ ศรีประเสริฐ\nSerial Number: QK2Q5W75V9\n\n📌 ร้านเพียวโมบาย ได้โอนเงินให้บริษัทแล้ว\nค่าบริการปลดออกจากระบบ 150 = รวม 150 บาท\nตรวจสอบสลิปโอนเรียบร้อยค่ะ @! Boommm"],
+  ["ขอชื่อ-นามสกุล","🔍 ตรวจสอบเครดิต","รบกวนขอชื่อ - นามสกุลของลูกค้าเพิ่มเติมหน่อยนะคะ"],
+  ["ขอเอกสารเพิ่มเติม","📝 เอกสาร","📍 แอดมินรบกวนขอเอกสารเพิ่มเติมนะคะ\n\n📂 เลือกส่งเพียง 1 อย่าง:\n\n✅ 1. สลิปเงินเดือน (3 เดือนย้อนหลัง)\n✅ 2. สเตทเมนต์ธนาคาร (3 เดือนย้อนหลัง)\n\n💡 หมายเหตุ: หากลูกค้าไม่สะดวกเรื่องเอกสาร จะต้องปรับเป็น วางเงินดาวน์ 35% เพื่อรับเครื่องค่ะ"],
+  ["เครื่องราคาสูง","💰 ดาวน์","📍เนื่องจากเป็นสินค้ามูลค่าสูง เงื่อนไขบริษัทจะต้องมี เอกสารรายได้ประกอบการส่งเคสทุกครั้ง ค่ะ\n\nเลือกส่งเพียง 1 อย่าง:\n\n✅ 1. สลิปเงินเดือน (3 เดือนย้อนหลัง)\n✅ 2. สเตทเมนต์ธนาคาร (3 เดือนย้อนหลัง)\n\n⚠️ กรณีไม่สะดวก/ไม่มีเอกสาร: จะต้องปรับเป็น วางเงินดาวน์ 35% เพื่ออนุมัติรับเครื่องค่ะ"],
+  ["iPhone 18 Series — ดาวน์เริ่มต้น 30%","💰 ดาวน์","📢 แจ้งเงื่อนไขผ่อน iPhone 18 Series\n\n📱 ดาวน์เริ่มต้น 30%\n📆 ผ่อนสูงสุด 15 งวด\n\n📌 เงื่อนไขสำคัญ\nทุกเคสต้องแนบ เอกสารแสดงรายได้ ประกอบการส่งเคส โดยเลือกส่งเพียง 1 อย่าง ดังนี้\n\n✅ 1. สลิปเงินเดือนย้อนหลัง 3 เดือน\n✅ 2. สเตทเมนต์ธนาคารย้อนหลัง 3 เดือน\n\n⚠️ กรณีไม่มีหรือไม่สะดวกส่งเอกสารรายได้\nจะต้องปรับเป็น ดาวน์ 40% เพื่อดำเนินการอนุมัติรับเครื่องค่ะ"]
+].map((x, i) => ({ id: "p" + i, name: x[0], category: x[1], content: x[2], fav: false }));
+
+let data = [];
+let active = "ทั้งหมด";
+let toastTimer = null;
+const $ = id => document.getElementById(id);
+
+function esc(s){
+  if(s === null || s === undefined) return "";
+  return String(s).replace(/[&<>"']/g, m => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  }[m]));
+}
+
+function showToast(message){
+  const toast = $("toast");
+  if(!toast) return;
+  toast.textContent = message;
+  toast.style.display = "block";
+  if(toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => {
+    toast.style.display = "none";
+  }, 2200);
+}
+
+function saveLocal(){
+  localStorage.setItem("bugfinn_patterns", JSON.stringify(data));
+  const favIds = data.filter(x => x.fav).map(x => x.id);
+  localStorage.setItem("bugfinn_favorites", JSON.stringify(favIds));
+}
+
+// ฟังก์ชันดึง patterns.json จากเซิร์ฟเวอร์ หรือ GitHub Raw
+async function fetchOnlinePatterns(){
+  // 1. ลองโหลดจาก ./patterns.json (เมื่อรันบน GitHub Pages)
+  try{
+    const res = await fetch("./patterns.json?v=" + Date.now(), { cache: "no-store" });
+    if(res.ok){
+      const items = await res.json();
+      if(Array.isArray(items) && items.length > 0) return items;
+    }
+  }catch(e){}
+
+  // 2. ถ้าเปิดแบบ Local (file://) หรือเซิร์ฟเวอร์อื่น ให้ดึงจาก GitHub Raw โดยตรง
+  try{
+    const res2 = await fetch(`${GITHUB_RAW_URL}?v=` + Date.now(), { cache: "no-store" });
+    if(res2.ok){
+      const items2 = await res2.json();
+      if(Array.isArray(items2) && items2.length > 0) return items2;
+    }
+  }catch(e){}
+
+  return null;
+}
+
+async function loadPatterns(isManualSync = false){
+  let favoriteIds = [];
+  try{
+    favoriteIds = JSON.parse(localStorage.getItem("bugfinn_favorites") || "[]");
+    if(!Array.isArray(favoriteIds)) favoriteIds = [];
+  }catch(e){
+    favoriteIds = [];
+  }
+
+  // 1. ถ้ามีการตั้งค่า Google Sheet ให้ดึงข้อมูลจาก Google Sheet ก่อน
+  if(GOOGLE_SHEET_API_URL){
+    updateSheetDotStatus("loading", "กำลังดึงข้อมูลจาก Google Sheet...");
+    try{
+      const sheetItems = await fetchOnlinePatternsFromSheet();
+      if(Array.isArray(sheetItems)){
+        if(sheetItems.length === 0){
+          // กรณี Sheet เชื่อมต่อได้แต่ยังไม่มีแถวข้อมูล ให้คงข้อมูลเดิมไว้ป้องกันหน้าจอว่างเปล่า
+          const localRaw = localStorage.getItem("bugfinn_patterns");
+          let existingData = [];
+          if(localRaw){
+            try{ existingData = JSON.parse(localRaw); }catch(e){}
+          }
+          if(!Array.isArray(existingData) || existingData.length === 0){
+            existingData = initial.map(x => ({ ...x, fav: favoriteIds.includes(x.id) }));
+          }
+          data = existingData;
+          saveLocal();
+          render();
+          updateSheetDotStatus("connected", "เชื่อมต่อ Google Sheet แล้ว (Sheet ยังว่างเปล่า - กดนำข้อมูลขึ้น Sheet ได้)");
+          if(isManualSync){
+            showToast("ℹ️ ใน Google Sheet ยังไม่มีข้อมูล (สามารถกดปุ่ม 'นำข้อมูลทั้งหมดขึ้น Sheet' ได้ครับ)");
+          }
+          return;
+        }
+
+        data = sheetItems.map(item => ({
+          ...item,
+          fav: !!item.fav || favoriteIds.includes(item.id)
+        }));
+        saveLocal();
+        render();
+        updateSheetDotStatus("connected", `เชื่อมต่อ Google Sheet แล้ว (${data.length} รายการ)`);
+        if(isManualSync){
+          showToast(`🔄 ซิงค์ข้อมูลจาก Google Sheet สำเร็จ (${data.length} รายการ)`);
+        }
+        return;
+      }
+    }catch(sheetErr){
+      console.warn("ไม่สามารถโหลดจาก Google Sheet ได้:", sheetErr);
+      updateSheetDotStatus("error", "เชื่อมต่อ Google Sheet ล้มเหลว: " + sheetErr.message);
+      if(isManualSync){
+        showToast("⚠️ ไม่สามารถดึงข้อมูลจาก Google Sheet ได้: " + sheetErr.message);
+      }
+    }
+  }else{
+    updateSheetDotStatus("", "ยังไม่ได้ตั้งค่า Google Sheet");
+  }
+
+  // 2. ถ้าไม่ได้ใช้ Google Sheet หรือดึงไม่สำเร็จ ให้ลองดึงจาก GitHub / ./patterns.json
+  const onlineData = await fetchOnlinePatterns();
+
+  if(onlineData && onlineData.length > 0){
+    const onlineMap = new Map();
+    onlineData.forEach(item => {
+      onlineMap.set(item.id || item.name, {
+        ...item,
+        fav: !!item.fav || favoriteIds.includes(item.id)
+      });
+    });
+
+    try{
+      const localData = JSON.parse(localStorage.getItem("bugfinn_patterns") || "[]");
+      if(Array.isArray(localData)){
+        localData.forEach(localItem => {
+          if(!onlineMap.has(localItem.id) && !onlineMap.has(localItem.name)){
+            onlineMap.set(localItem.id, localItem);
+          }
+        });
+      }
+    }catch(e){}
+
+    data = Array.from(onlineMap.values());
+    saveLocal();
+    render();
+    if(isManualSync){
+      showToast(`🔄 ซิงค์ข้อมูลล่าสุดสำเร็จ (${data.length} รายการ)`);
+    }
+    return;
+  }
+
+  // 3. ใช้ข้อมูลจาก LocalStorage
+  const localRaw = localStorage.getItem("bugfinn_patterns");
+  if(localRaw !== null){
+    try{
+      const parsed = JSON.parse(localRaw);
+      if(Array.isArray(parsed) && parsed.length === 29){
+        data = parsed.map(x => ({
+          ...x,
+          fav: !!x.fav || favoriteIds.includes(x.id)
+        }));
+        render();
+        if(isManualSync) showToast("ใช้ข้อมูลล่าสุดจากในเครื่อง (ออฟไลน์)");
+        return;
+      }
+    }catch(e){}
+  }
+
+  // 4. ใช้ข้อมูลเริ่มต้น
+  data = initial.map(x => ({
+    ...x,
+    fav: favoriteIds.includes(x.id)
+  }));
+  saveLocal();
+  render();
+  if(isManualSync) showToast("ใช้ข้อมูลเริ่มต้น");
+}
+
+function getAllCategories(){
+  const customCats = data.map(x => x.category).filter(Boolean);
+  return Array.from(new Set([...defaultCategories, ...customCats]));
+}
+
+function populateCategorySelect(selectedVal = ""){
+  const select = $("category");
+  const cats = getAllCategories();
+  
+  let optionsHtml = cats.map(c => 
+    `<option value="${esc(c)}">${esc(c)}</option>`
+  ).join("");
+  
+  optionsHtml += `<option value="__custom__">➕ พิมพ์หมวดหมู่ใหม่...</option>`;
+  select.innerHTML = optionsHtml;
+
+  const customWrap = $("customCategoryWrap");
+  const customInput = $("customCategory");
+
+  if(selectedVal && cats.includes(selectedVal)){
+    select.value = selectedVal;
+    customWrap.style.display = "none";
+    customInput.value = "";
+  }else if(selectedVal){
+    select.value = "__custom__";
+    customWrap.style.display = "block";
+    customInput.value = selectedVal;
+  }else{
+    select.selectedIndex = 0;
+    customWrap.style.display = "none";
+    customInput.value = "";
+  }
+}
+
+function categories(){
+  const catsContainer = $("cats");
+  const allCats = getAllCategories();
+  
+  const counts = { "ทั้งหมด": data.length };
+  counts["⭐ รายการโปรด"] = data.filter(x => x.fav).length;
+  
+  allCats.forEach(c => {
+    counts[c] = data.filter(x => x.category === c).length;
+  });
+
+  const catList = ["ทั้งหมด", "⭐ รายการโปรด", ...allCats];
+
+  catsContainer.innerHTML = catList.map(c => {
+    const isActive = (c === active);
+    const count = counts[c] !== undefined ? counts[c] : 0;
+    let iconPrefix = "";
+    let ribbonSticker = "";
+
+    if (c === "ทั้งหมด") {
+      iconPrefix = `<svg width="18" height="18" viewBox="0 0 24 24" fill="white" style="vertical-align:middle;margin-right:2px"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>`;
+      ribbonSticker = `<img src="assets/cat_ribbon.png" alt="Ribbon" class="cat-ribbon-img">`;
+    }
+
+    return `<button type="button" class="cat-btn ${isActive ? 'active' : ''}" data-cat="${esc(c)}">
+      ${ribbonSticker}
+      ${iconPrefix}${esc(c)}
+      <span class="cat-count">${count}</span>
+    </button>`;
+  }).join("");
+}
+
+function setCat(c){
+  active = c;
+  render();
+}
+
+
+function getCardTheme(item, index) {
+  const cat = (item.category || "").toLowerCase();
+  const name = (item.name || "").toLowerCase();
+  if (cat.includes("ตรวจสอบเครดิต") || cat.includes("ดาวน์") || name.includes("ตรวจสอบเครดิต")) return "melody";
+  if (cat.includes("เครดิตผ่าน") || cat.includes("iphone") || name.includes("เครดิตผ่าน")) return "cinnamon";
+  if (cat.includes("ไม่อนุมัติ") || cat.includes("เอกสาร") || name.includes("ไม่อนุมัติ")) return "duo";
+  
+  const themes = ["melody", "cinnamon", "duo"];
+  return themes[index % 3];
+}
+function render(){
+  categories();
+  
+  const q = ($("search").value || "").toLowerCase().trim();
+  $("searchClear").style.display = q ? "block" : "none";
+
+  const list = data.filter(x => {
+    const matchCat = (active === "ทั้งหมด") 
+      ? true 
+      : (active === "⭐ รายการโปรด" ? !!x.fav : x.category === active);
+    
+    const searchTarget = ((x.name || "") + " " + (x.category || "") + " " + (x.content || "")).toLowerCase();
+    const matchSearch = !q || searchTarget.includes(q);
+    return matchCat && matchSearch;
+  });
+
+  $("statsCount").textContent = `แสดง ${list.length} จากทั้งหมด ${data.length} รายการ ${active !== "ทั้งหมด" ? `(หมวดหมู่: ${active})` : ""}`;
+
+  const grid = $("grid");
+  if(!list.length){
+    grid.innerHTML = `<div class="empty">🔍 ไม่พบ Pattern ที่ค้นหา</div>`;
+    return;
+  }
+
+  grid.innerHTML = list.map((x, idx) => {
+    const theme = getCardTheme(x, idx);
+    let stickersHtml = "";
+    if (theme === "melody") {
+      stickersHtml = `
+        <img src="assets/melody_top.png" class="card-sticker sticker-melody-top" alt="My Melody">
+        <img src="assets/melody_bottom.png" class="card-sticker sticker-melody-bottom" alt="My Melody Sitting">
+      `;
+    } else if (theme === "cinnamon") {
+      stickersHtml = `
+        <img src="assets/cinnamon_top.png" class="card-sticker sticker-cinnamon-top" alt="Cinnamoroll">
+        <img src="assets/cinnamon_bottom.png" class="card-sticker sticker-cinnamon-bottom" alt="Cinnamoroll Star">
+      `;
+    } else if (theme === "duo") {
+      stickersHtml = `
+        <img src="assets/duo_top.png" class="card-sticker sticker-duo-top" alt="Duo Melody & Cinnamon">
+        <img src="assets/duo_bottom_left.png" class="card-sticker sticker-duo-bot-left" alt="Cinnamoroll Heart">
+        <img src="assets/duo_bottom_right.png" class="card-sticker sticker-duo-bot-right" alt="Melody Peeking">
+      `;
+    }
+
+    return `
+    <article class="card theme-${theme}" data-id="${esc(x.id)}">
+      ${stickersHtml}
+      <div class="card-top">
+        <div class="title">${esc(x.name)}</div>
+        <button type="button" class="star ${x.fav ? 'on' : ''}" data-action="fav" title="${x.fav ? 'ลบออกจากรายการโปรด' : 'เพิ่มเป็นรายการโปรด'}">
+          <svg class="star-icon" width="22" height="22" viewBox="0 0 24 24" fill="${x.fav ? '#f59e0b' : 'none'}" stroke="${x.fav ? '#f59e0b' : 'currentColor'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+          </svg>
+        </button>
+      </div>
+      <div class="badge-wrap"><span class="badge badge-${theme}">${esc(x.category || "ทั่วไป")}</span></div>
+      <div class="content" id="content-${esc(x.id)}">${esc(x.content)}</div>
+      <button type="button" class="expand-btn expand-btn-${theme}" data-action="toggle-expand">ดูเพิ่มเติม ▼</button>
+      <div class="actions">
+        <button type="button" class="btn btn-copy-${theme}" data-action="copy">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect><line x1="9" y1="12" x2="15" y2="12"></line><line x1="9" y1="16" x2="13" y2="16"></line></svg>
+          คัดลอก
+        </button>
+        <button type="button" class="btn btn-edit-${theme}" data-action="edit">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+          แก้ไข
+        </button>
+        <button type="button" class="btn btn-del-${theme}" data-action="delete">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+          ลบ
+        </button>
+      </div>
+    </article>
+    `;
+  }).join("");
+}
+
+async function copyText(id){
+  const x = data.find(a => a.id === id);
+  if(!x) return;
+
+  let copied = false;
+  if(navigator.clipboard && window.isSecureContext){
+    try{
+      await navigator.clipboard.writeText(x.content);
+      copied = true;
+    }catch(e){
+      copied = false;
+    }
+  }
+
+  if(!copied){
+    try{
+      const t = document.createElement("textarea");
+      t.value = x.content;
+      t.style.position = "fixed";
+      t.style.left = "-9999px";
+      t.style.top = "-9999px";
+      t.style.opacity = "0";
+      document.body.appendChild(t);
+      t.focus();
+      t.select();
+      document.execCommand("copy");
+      t.remove();
+      copied = true;
+    }catch(err){
+      prompt("คัดลอกข้อความด้านล่าง:", x.content);
+      return;
+    }
+  }
+
+  showToast("คัดลอกแล้ว ✓");
+}
+
+function toggleFav(id){
+  const x = data.find(a => a.id === id);
+  if(!x) return;
+  x.fav = !x.fav;
+  saveLocal();
+  render();
+  showToast(x.fav ? "⭐ เพิ่มลงในรายการโปรดแล้ว" : "นำออกจากรายการโปรดแล้ว");
+}
+
+function openModal(){
+  $("modalTitle").textContent = "เพิ่ม Pattern";
+  $("editId").value = "";
+  $("name").value = "";
+  $("content").value = "";
+  $("sendToSheet").checked = true;
+  $("sheetOptionContainer").style.display = "block";
+  
+  populateCategorySelect(active !== "ทั้งหมด" && active !== "⭐ รายการโปรด" ? active : "");
+  
+  $("modal").classList.add("show");
+  setTimeout(() => $("name").focus(), 60);
+}
+
+function editPattern(id){
+  const x = data.find(a => a.id === id);
+  if(!x) return;
+
+  $("modalTitle").textContent = "แก้ไข Pattern";
+  $("editId").value = x.id;
+  $("name").value = x.name || "";
+  $("content").value = x.content || "";
+  $("sheetOptionContainer").style.display = "none";
+  
+  populateCategorySelect(x.category || "");
+  
+  $("modal").classList.add("show");
+  setTimeout(() => $("name").focus(), 60);
+}
+
+function closeModal(){
+  $("modal").classList.remove("show");
+}
+
+async function savePattern(){
+  const name = $("name").value.trim();
+  const content = $("content").value.trim();
+  const selectCat = $("category").value;
+  let category = selectCat;
+
+  if(selectCat === "__custom__"){
+    category = $("customCategory").value.trim();
+  }
+
+  if(!name){
+    alert("กรุณากรอกชื่อ Pattern");
+    $("name").focus();
+    return;
+  }
+
+  if(!category){
+    alert("กรุณาเลือกหรือระบุหมวดหมู่");
+    if(selectCat === "__custom__") $("customCategory").focus();
+    return;
+  }
+
+  if(!content){
+    alert("กรุณากรอกข้อความ Pattern");
+    $("content").focus();
+    return;
+  }
+
+  const editId = $("editId").value;
+
+  // 1. แก้ไข Pattern เดิม
+  if(editId){
+    const x = data.find(a => a.id === editId);
+    if(x){
+      x.name = name;
+      x.category = category;
+      x.content = content;
+      saveLocal();
+      closeModal();
+      render();
+
+      if(GOOGLE_SHEET_API_URL){
+        showToast("⏳ กำลังอัปเดต Google Sheet...");
+        callSheetApi("update", { item: { id: editId, name, category, content } })
+          .then(() => showToast("✅ บันทึกและอัปเดตลง Google Sheet สำเร็จ"))
+          .catch(err => {
+            console.error(err);
+            showToast("⚠️ บันทึกในเครื่องแล้ว แต่อัปเดต Google Sheet ไม่สำเร็จ");
+          });
+      }else{
+        showToast("✅ บันทึกการแก้ไขแล้ว (ในเครื่อง)");
+      }
+    }
+    return;
+  }
+
+  // 2. เพิ่ม Pattern ใหม่ บันทึกลงในรายการของเครื่องทันที
+  const newPattern = {
+    id: "p_" + Date.now() + "_" + Math.floor(Math.random() * 1000),
+    name,
+    category,
+    content,
+    fav: false
+  };
+
+  data.unshift(newPattern);
+  saveLocal();
+  closeModal();
+  render();
+
+  const shouldSyncSheet = $("sendToSheet").checked;
+  if(shouldSyncSheet && GOOGLE_SHEET_API_URL){
+    showToast("⏳ กำลังบันทึกลง Google Sheet...");
+    callSheetApi("add", { item: newPattern })
+      .then(() => {
+        showToast("✅ เพิ่ม Pattern และบันทึกลง Google Sheet สำเร็จ!");
+        updateSheetDotStatus("connected");
+      })
+      .catch(err => {
+        console.error(err);
+        showToast("⚠️ บันทึกในเครื่องแล้ว แต่ส่ง Google Sheet ไม่สำเร็จ: " + err.message);
+      });
+  }else if(shouldSyncSheet && !GOOGLE_SHEET_API_URL){
+    showToast("✅ บันทึกในเครื่องแล้ว (กด 'ตั้งค่า Google Sheet' เพื่อเปิดซิงค์ออนไลน์)");
+  }else{
+    showToast("✅ เพิ่ม Pattern สำเร็จ (บันทึกเฉพาะในเครื่องนี้)");
+  }
+}
+
+function deletePattern(id){
+  const x = data.find(a => a.id === id);
+  if(!x) return;
+
+  if(confirm(`คุณต้องการลบ Pattern "${x.name}" ใช่หรือไม่?`)){
+    data = data.filter(a => a.id !== id);
+    saveLocal();
+    render();
+
+    if(GOOGLE_SHEET_API_URL){
+      callSheetApi("delete", { id, name: x.name })
+        .then(() => showToast("🗑️ ลบ Pattern จากเครื่องและ Google Sheet แล้ว"))
+        .catch(err => {
+          console.error(err);
+          showToast("🗑️ ลบจากเครื่องแล้ว แต่ลบใน Google Sheet ไม่สำเร็จ");
+        });
+    }else{
+      showToast("🗑️ ลบ Pattern แล้ว");
+    }
+  }
+}
+
+function openSheetSettingsModal(){
+  $("sheetApiUrl").value = GOOGLE_SHEET_API_URL || DEFAULT_SHEET_API_URL;
+  const statusMsg = $("sheetStatusMsg");
+  if(GOOGLE_SHEET_API_URL){
+    statusMsg.textContent = "เชื่อมต่อกับ URL นี้อยู่ (คลิก 'ทดสอบเชื่อมต่อ' เพื่อตรวจสอบ)";
+    statusMsg.style.color = "var(--muted)";
+  }else{
+    statusMsg.textContent = "ปิดการเชื่อมต่ออยู่ (ออฟไลน์) - คลิก 'คืนค่าเดิม' เพื่อเชื่อมต่อ URL เริ่มต้น";
+    statusMsg.style.color = "var(--muted)";
+  }
+  $("sheetSettingsModal").classList.add("show");
+}
+
+function closeSheetSettingsModal(){
+  $("sheetSettingsModal").classList.remove("show");
+}
+
+function saveSheetUrl(notify = true){
+  const url = $("sheetApiUrl").value.trim();
+  GOOGLE_SHEET_API_URL = url;
+  if(url){
+    localStorage.setItem(SHEET_URL_KEY, url);
+    updateSheetDotStatus("loading", "มี URL Google Sheet");
+    if(notify) showToast("💾 บันทึก URL เรียบร้อย");
+    testSheetConnection();
+  }else{
+    localStorage.setItem(SHEET_URL_KEY, "__OFFLINE__");
+    updateSheetDotStatus("", "ยังไม่ได้เชื่อมต่อ");
+    $("sheetStatusMsg").textContent = "ปิดการเชื่อมต่อแล้ว (ทำงานแบบออฟไลน์)";
+    $("sheetStatusMsg").style.color = "var(--muted)";
+    if(notify) showToast("ปิดการเชื่อมต่อเรียบร้อย");
+  }
+}
+
+async function testSheetConnection(){
+  const url = $("sheetApiUrl").value.trim() || GOOGLE_SHEET_API_URL;
+  const statusMsg = $("sheetStatusMsg");
+  if(!url){
+    statusMsg.textContent = "กรุณากรอก URL ก่อนกดทดสอบ";
+    statusMsg.style.color = "var(--danger)";
+    return;
+  }
+  statusMsg.textContent = "⏳ กำลังทดสอบการเชื่อมต่อไปยัง Google Sheet...";
+  statusMsg.style.color = "var(--pink)";
+  updateSheetDotStatus("loading");
+
+  try{
+    const sep = url.includes("?") ? "&" : "?";
+    const res = await fetch(`${url}${sep}action=get&v=${Date.now()}`, { cache: "no-store" });
+    if(!res.ok) throw new Error("HTTP " + res.status);
+    const json = await res.json();
+    if(json && json.status === "success"){
+      // บันทึก URL อัตโนมัติเมื่อทดสอบผ่าน
+      GOOGLE_SHEET_API_URL = url;
+      localStorage.setItem(SHEET_URL_KEY, url);
+      statusMsg.textContent = `🟢 เชื่อมต่อสำเร็จและบันทึก URL แล้ว! พบคลัง Pattern ใน Sheet ทั้งหมด ${json.count || (json.data && json.data.length) || 0} รายการ`;
+      statusMsg.style.color = "var(--success)";
+      updateSheetDotStatus("connected", "เชื่อมต่อ Google Sheet แล้ว");
+      showToast("🟢 ทดสอบเชื่อมต่อ Google Sheet สำเร็จ!");
+    }else{
+      throw new Error((json && json.message) || "ตอบกลับไม่ถูกต้อง");
+    }
+  }catch(err){
+    statusMsg.textContent = `🔴 เชื่อมต่อไม่สำเร็จ: ${err.message} (โปรดตรวจสอบว่าสิทธิ์เข้าถึงตั้งเป็น "ทุกคน/Anyone" หรือไม่)`;
+    statusMsg.style.color = "var(--danger)";
+    updateSheetDotStatus("error", "เชื่อมต่อไม่สำเร็จ");
+    showToast("🔴 เชื่อมต่อไม่สำเร็จ: " + err.message);
+  }
+}
+
+async function uploadAllToSheet(){
+  const inputUrl = $("sheetApiUrl") ? $("sheetApiUrl").value.trim() : "";
+  if(inputUrl && (!GOOGLE_SHEET_API_URL || GOOGLE_SHEET_API_URL !== inputUrl)){
+    GOOGLE_SHEET_API_URL = inputUrl;
+    localStorage.setItem(SHEET_URL_KEY, inputUrl);
+  }
+
+  if(!GOOGLE_SHEET_API_URL){
+    alert("กรุณากรอกและบันทึก URL เว็บแอปก่อนทำการอัปโหลดข้อมูล");
+    return;
+  }
+  if(!confirm(`ต้องการนำข้อมูล Pattern ในเครื่องทั้งหมด (${data.length} รายการ) ขึ้นไปบันทึกแทนที่ใน Google Sheet ใช่หรือไม่?\n\n(เหมาะสำหรับตอนเริ่มใช้งาน เพื่อให้ข้อมูลเดิมเข้าไปอยู่ใน Google Sheet ครั้งแรก)`)){
+    return;
+  }
+
+  showToast("⏳ กำลังอัปโหลดข้อมูลทั้งหมดขึ้น Google Sheet...");
+  try{
+    await callSheetApi("batch_save", { items: data });
+    showToast(`✅ อัปโหลด Pattern ทั้งหมด ${data.length} รายการขึ้น Google Sheet สำเร็จ!`);
+    updateSheetDotStatus("connected");
+    $("sheetStatusMsg").textContent = `🟢 อัปโหลดข้อมูลทั้งหมด ${data.length} รายการขึ้น Sheet เรียบร้อยแล้ว`;
+    $("sheetStatusMsg").style.color = "var(--success)";
+  }catch(err){
+    alert("อัปโหลดไม่สำเร็จ: " + err.message);
+    showToast("⚠️ อัปโหลดไม่สำเร็จ: " + err.message);
+  }
+}
+
+function copyAppsScriptCode(){
+  if(navigator.clipboard && window.isSecureContext){
+    navigator.clipboard.writeText(APPS_SCRIPT_CODE).then(() => {
+      showToast("📋 คัดลอกโค้ด Apps Script แล้ว! นำไปวางใน Code.gs ได้เลย");
+    }).catch(() => fallbackCopyCode());
+  }else{
+    fallbackCopyCode();
+  }
+}
+
+function fallbackCopyCode(){
+  const ta = document.createElement("textarea");
+  ta.value = APPS_SCRIPT_CODE;
+  ta.style.position = "fixed";
+  ta.style.left = "-9999px";
+  document.body.appendChild(ta);
+  ta.select();
+  document.execCommand("copy");
+  ta.remove();
+  showToast("📋 คัดลอกโค้ด Apps Script แล้ว! นำไปวางใน Code.gs ได้เลย");
+}
+
+function resetData(){
+  if(confirm("คุณต้องการล้างข้อมูลที่แก้ไข/เพิ่มไว้ทั้งหมด และรีเซ็ตกลับเป็นข้อมูลเริ่มต้นใช่หรือไม่?")){
+    localStorage.removeItem("bugfinn_patterns");
+    localStorage.removeItem("bugfinn_favorites");
+    data = initial.map(x => ({ ...x, fav: false }));
+    active = "ทั้งหมด";
+    $("search").value = "";
+    saveLocal();
+    render();
+    showToast("↺ รีเซ็ตข้อมูลเริ่มต้นเรียบร้อยแล้ว");
+  }
+}
+
+function exportData(){
+  const exportItems = data.map(({ id, name, category, content, fav }) => ({ id, name, category, content, fav }));
+  const blob = new Blob([JSON.stringify(exportItems, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `bugfinn_patterns_${new Date().toISOString().slice(0, 10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast("📥 ส่งออกข้อมูลเรียบร้อยแล้ว");
+}
+
+function importData(e){
+  const file = e.target.files && e.target.files[0];
+  if(!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(evt){
+    try{
+      const imported = JSON.parse(evt.target.result);
+      if(!Array.isArray(imported)){
+        alert("ไฟล์ JSON ต้องเป็นรายการ Array ของ Pattern");
+        return;
+      }
+      
+      const validated = imported.filter(x => x && x.name && x.content).map((x, idx) => ({
+        id: x.id || ("p_imp_" + Date.now() + "_" + idx),
+        name: String(x.name),
+        category: String(x.category || "📌 อื่น ๆ"),
+        content: String(x.content),
+        fav: !!x.fav
+      }));
+
+      if(validated.length === 0){
+        alert("ไม่พบข้อมูล Pattern ที่ถูกต้องในไฟล์");
+        return;
+      }
+
+      if(confirm(`พบข้อมูลที่ถูกต้อง ${validated.length} รายการ ต้องการแทนที่ข้อมูลเดิมหรือรวมเข้าด้วยกัน?\n\n- กด [ตกลง / OK] เพื่อนำเข้ารวมกับข้อมูลเดิม\n- กด [ยกเลิก / Cancel] เพื่อแทนที่ข้อมูลทั้งหมดด้วยไฟล์นี้`)){
+        const existingIds = new Set(data.map(x => x.id));
+        const newOnes = validated.map(x => {
+          if(existingIds.has(x.id)) x.id = "p_imp_" + Date.now() + "_" + Math.random().toString(36).substr(2, 5);
+          return x;
+        });
+        data = [...newOnes, ...data];
+      }else{
+        data = validated;
+      }
+
+      saveLocal();
+      render();
+      showToast(`📤 นำเข้าข้อมูลสำเร็จ (${validated.length} รายการ)`);
+    }catch(err){
+      alert("ไฟล์ JSON ไม่ถูกต้อง: " + err.message);
+    }
+    $("importFileInput").value = "";
+  };
+  reader.readAsText(file);
+}
+
+// Event Listeners
+document.addEventListener("DOMContentLoaded", () => {
+  // Modal Buttons
+  $("addPatternBtn").addEventListener("click", openModal);
+  $("cancelModalBtn").addEventListener("click", closeModal);
+  $("savePatternBtn").addEventListener("click", savePattern);
+
+  // Category select change (เปิดช่องพิมพ์หมวดหมู่ใหม่ถ้าเลือก __custom__)
+  $("category").addEventListener("change", e => {
+    const customWrap = $("customCategoryWrap");
+    if(e.target.value === "__custom__"){
+      customWrap.style.display = "block";
+      $("customCategory").focus();
+    }else{
+      customWrap.style.display = "none";
+    }
+  });
+
+  // Search input & Clear button
+  $("search").addEventListener("input", render);
+  $("searchClear").addEventListener("click", () => {
+    $("search").value = "";
+    $("search").focus();
+    render();
+  });
+
+  // Categories Event Delegation
+  $("cats").addEventListener("click", e => {
+    const btn = e.target.closest(".cat-btn");
+    if(btn && btn.dataset.cat){
+      setCat(btn.dataset.cat);
+    }
+  });
+
+  // Grid Actions Event Delegation (Star, Copy, Edit, Delete, Expand)
+  $("grid").addEventListener("click", e => {
+    const card = e.target.closest(".card");
+    if(!card) return;
+    const id = card.dataset.id;
+    const actionBtn = e.target.closest("[data-action]");
+    if(!actionBtn) return;
+
+    const action = actionBtn.dataset.action;
+    if(action === "fav"){
+      toggleFav(id);
+    }else if(action === "copy"){
+      copyText(id);
+    }else if(action === "edit"){
+      editPattern(id);
+    }else if(action === "delete"){
+      deletePattern(id);
+    }else if(action === "toggle-expand"){
+      const contentEl = document.getElementById(`content-${id}`);
+      if(contentEl){
+        const isExp = contentEl.classList.toggle("expanded");
+        actionBtn.textContent = isExp ? "ย่อขึ้น ▲" : "ดูเพิ่มเติม ▼";
+      }
+    }
+  });
+
+  // Google Sheet Modal & Actions
+  $("sheetSettingsBtn").addEventListener("click", openSheetSettingsModal);
+  $("closeSheetSettingsBtn").addEventListener("click", closeSheetSettingsModal);
+  $("saveSheetUrlBtn").addEventListener("click", () => saveSheetUrl(true));
+  $("testSheetBtn").addEventListener("click", testSheetConnection);
+  $("resetSheetUrlBtn").addEventListener("click", () => {
+    $("sheetApiUrl").value = DEFAULT_SHEET_API_URL;
+    saveSheetUrl(true);
+  });
+  $("uploadAllToSheetBtn").addEventListener("click", uploadAllToSheet);
+  $("copyAppsScriptBtn").addEventListener("click", copyAppsScriptCode);
+
+  // Header Actions
+  $("syncBtn").addEventListener("click", () => loadPatterns(true));
+  $("resetBtn").addEventListener("click", resetData);
+  $("exportBtn").addEventListener("click", exportData);
+  $("importBtn").addEventListener("click", () => $("importFileInput").click());
+  $("importFileInput").addEventListener("change", importData);
+
+  // Modal Backdrop Click
+  $("modal").addEventListener("click", e => {
+    if(e.target.id === "modal"){
+      closeModal();
+    }
+  });
+  $("sheetSettingsModal").addEventListener("click", e => {
+    if(e.target.id === "sheetSettingsModal"){
+      closeSheetSettingsModal();
+    }
+  });
+
+  // Keyboard shortcut: Esc to close modal
+  document.addEventListener("keydown", e => {
+    if(e.key === "Escape"){
+      if($("modal").classList.contains("show")) closeModal();
+      if($("sheetSettingsModal").classList.contains("show")) closeSheetSettingsModal();
+    }
+  });
+
+  // โหลดข้อมูลเบื้องต้นทันที (Instant Render from Cache or Initial)
+  let initialFavoriteIds = [];
+  try{
+    initialFavoriteIds = JSON.parse(localStorage.getItem("bugfinn_favorites") || "[]");
+    if(!Array.isArray(initialFavoriteIds)) initialFavoriteIds = [];
+  }catch(e){}
+
+  try{
+    const cached = JSON.parse(localStorage.getItem("bugfinn_patterns") || "[]");
+    if(Array.isArray(cached) && cached.length > 0){
+      data = cached.map(x => ({ ...x, fav: !!x.fav || initialFavoriteIds.includes(x.id) }));
+    }else{
+      data = initial.map(x => ({ ...x, fav: initialFavoriteIds.includes(x.id) }));
+    }
+  }catch(e){
+    data = initial.map(x => ({ ...x, fav: initialFavoriteIds.includes(x.id) }));
+  }
+  render();
+
+  // ดึงข้อมูลอัปเดตจาก Google Sheet หรือ Online ต่อเนื่องในพื้นหลัง
+  loadPatterns();
+});
+
+</script>
+</body>
+</html>
