@@ -103,35 +103,41 @@ body{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  gap:16px;
-  margin:6px 0 38px 0;
-  flex-wrap:wrap;
+  height:53px;
+  margin:6px 0 32px 0;
+  position:relative;
 }
 .action-buttons-group{
   display:flex;
-  gap:12px;
-  flex-wrap:wrap;
+  gap:10px;
   align-items:center;
 }
 .nav-btn{
   background:#ffffff;
   border:1.5px solid var(--border-light);
   color:var(--dark);
-  height:42px;
-  padding:0 18px;
+  height:53px;
+  padding:0 20px;
   border-radius:999px;
-  font-size:13.5px;
+  font-size:14px;
   font-weight:600;
   display:inline-flex;
   align-items:center;
   gap:8px;
   text-decoration:none;
   cursor:pointer;
-  box-shadow:0 2px 8px rgba(220, 180, 195, 0.08);
+  box-shadow:0 2px 8px rgba(220, 180, 195, 0.1);
   transition:all 0.2s ease;
   user-select:none;
   font-family:var(--font-main);
+  box-sizing:border-box;
 }
+#page2Btn{border-color:#ffb5cb;}
+#sheetSettingsBtn{border-color:#ffb5cb;}
+#syncBtn{border-color:#9ed4fd;}
+#exportBtn{border-color:#9ed4fd;}
+#importBtn{border-color:#9ed4fd;}
+#resetBtn{border-color:#c8d8ea;}
 .nav-btn:hover{
   transform:translateY(-2px);
   border-color:var(--pink-border);
@@ -142,24 +148,24 @@ body{
   transform:scale(0.98);
 }
 .icon-box{
-  width:22px;
-  height:22px;
-  border-radius:6px;
+  width:26px;
+  height:26px;
+  border-radius:8px;
   display:inline-flex;
   align-items:center;
   justify-content:center;
   flex-shrink:0;
 }
-.icon-box.pink{background:#ff7fa9;}
+.icon-box.pink{background:#ff7aa8;}
 .icon-box.green{background:#22c55e;}
 .icon-box.blue{background:#3b82f6;}
 .icon-box.outline-blue{
   background:transparent;
-  border:1.5px solid #3b82f6;
+  color:#3b82f6;
 }
 .icon-box.outline-slate{
   background:transparent;
-  border:1.5px solid #64748b;
+  color:#5b728d;
 }
 .nav-heart{
   margin-left:2px;
@@ -167,9 +173,14 @@ body{
 .nav-heads-wrap{
   display:flex;
   align-items:center;
+  position:absolute;
+  right:0;
+  top:-8px;
 }
 .nav-heads-img{
-  height:58px;
+  height:59px;
+  width:192px;
+  object-fit:contain;
   pointer-events:none;
   user-select:none;
   filter:drop-shadow(0 2px 6px rgba(255, 182, 193, 0.2));
@@ -200,38 +211,42 @@ body{
 /* Toolbar: Search and Add Pattern */
 .toolbar-row{
   display:flex;
-  gap:16px;
+  gap:32px;
   align-items:center;
-  margin-bottom:12px;
+  height:59px;
+  margin-bottom:44px;
 }
 .search-box{
   flex:1;
+  height:59px;
   position:relative;
 }
 .search-input{
   width:100%;
-  height:64px;
+  height:59px;
   border-radius:999px;
   border:2px solid #f6cfde;
   background:#ffffff;
-  padding:0 72px 0 56px;
+  padding:0 72px 0 58px;
   font-size:15px;
+  font-weight:500;
   color:var(--dark);
-  box-shadow:0 4px 18px rgba(240, 160, 190, 0.14);
+  box-shadow:0 4px 18px rgba(240, 160, 190, 0.12);
   outline:none;
   transition:all 0.2s ease;
   font-family:var(--font-main);
+  box-sizing:border-box;
 }
 .search-input:focus{
   border-color:var(--pink-primary);
   box-shadow:0 0 0 4px rgba(255, 123, 168, 0.18);
 }
 .search-input::placeholder{
-  color:#b59fa8;
+  color:#9e8b95;
 }
 .search-icon-wrap{
   position:absolute;
-  left:20px;
+  left:22px;
   top:50%;
   transform:translateY(-50%);
   display:flex;
@@ -241,7 +256,7 @@ body{
 }
 .search-ribbon-img{
   position:absolute;
-  right:24px;
+  right:26px;
   top:50%;
   transform:translateY(-50%);
   height:26px;
@@ -267,9 +282,10 @@ body{
 
 /* Add Pattern Button */
 .btn-add-pattern{
-  height:64px;
+  height:59px;
+  width:223px;
   border-radius:999px;
-  padding:0 22px 0 26px;
+  padding:0 20px 0 24px;
   background:linear-gradient(135deg, #ff7aa8, #ff8eb8);
   color:#ffffff;
   border:none;
@@ -277,13 +293,15 @@ body{
   font-weight:700;
   display:inline-flex;
   align-items:center;
-  gap:10px;
+  justify-content:center;
+  gap:8px;
   cursor:pointer;
   box-shadow:0 6px 18px rgba(255, 123, 168, 0.32);
   white-space:nowrap;
   transition:all 0.2s ease;
   user-select:none;
   font-family:var(--font-main);
+  box-sizing:border-box;
 }
 .btn-add-pattern:hover{
   transform:translateY(-2px);
@@ -300,12 +318,15 @@ body{
 /* Categories Row */
 .categories-wrap{
   display:flex;
-  gap:10px;
+  gap:14px;
   overflow-x:auto;
-  padding:4px 0 6px 0;
-  margin-bottom:4px;
+  overflow-y:visible;
+  padding:18px 0 6px 0;
+  margin-top:-18px;
+  margin-bottom:34px;
   scrollbar-width:none;
   -ms-overflow-style:none;
+  align-items:center;
 }
 .categories-wrap::-webkit-scrollbar{
   display:none;
@@ -315,21 +336,30 @@ body{
   background:#ffffff;
   border:1.5px solid var(--border-light);
   color:var(--dark);
-  padding:10px 18px;
-  height:50px;
+  padding:0 14px;
+  height:35px;
   border-radius:999px;
   cursor:pointer;
-  font-size:14.5px;
+  font-size:13.5px;
   font-weight:600;
   display:inline-flex;
   align-items:center;
   gap:6px;
-  box-shadow:0 2px 8px rgba(220, 180, 195, 0.08);
+  box-shadow:0 2px 6px rgba(220, 180, 195, 0.08);
   transition:all 0.2s ease;
   position:relative;
   user-select:none;
   font-family:var(--font-main);
+  box-sizing:border-box;
 }
+.cat-btn[data-cat="⭐ รายการโปรด"]{border-color:#fed7aa;}
+.cat-btn[data-cat="🔍 ตรวจสอบเครดิต"]{border-color:#bce1fd;}
+.cat-btn[data-cat="✅ เครดิตผ่าน"]{border-color:#bbf7d0;}
+.cat-btn[data-cat="❌ ไม่อนุมัติ"]{border-color:#fecaca;}
+.cat-btn[data-cat="💰 ดาวน์"]{border-color:#fde68a;}
+.cat-btn[data-cat="📱 iPhone 18 Series"]{border-color:#c7d2fe;}
+.cat-btn[data-cat="📝 เอกสาร"]{border-color:#e2e8f0;}
+
 .cat-btn:hover{
   background:#fff5f8;
   border-color:var(--pink-border);
@@ -343,19 +373,19 @@ body{
 }
 .cat-ribbon-img{
   position:absolute;
-  top:-14px;
+  top:-16px;
   left:-10px;
   height:32px;
   pointer-events:none;
-  z-index:3;
+  z-index:10;
 }
 .cat-count{
   display:inline-block;
   background:#f0eaf2;
   color:#6b5c68;
-  padding:2px 8px;
+  padding:2px 7px;
   border-radius:999px;
-  font-size:12.5px;
+  font-size:11.5px;
   font-weight:600;
   margin-left:4px;
 }
@@ -366,10 +396,11 @@ body{
 
 /* Stats Row */
 .stats-bar{
-  font-size:14px;
-  color:var(--muted);
+  font-size:13.5px;
+  color:#7a6673;
   font-weight:500;
-  margin:12px 0 14px 2px;
+  margin:0 0 34px 2px;
+  line-height:1;
 }
 
 /* Cards Grid */
@@ -377,20 +408,23 @@ body{
   display:grid;
   grid-template-columns:repeat(3, 1fr);
   gap:24px;
-  margin-bottom:40px;
+  row-gap:80px;
+  margin-bottom:60px;
 }
 
 /* Card Base */
 .card{
   background:#ffffff;
   border-radius:28px;
-  padding:24px 26px 20px 26px;
+  padding:22px 24px 18px 24px;
   box-shadow:var(--shadow-card);
   display:flex;
   flex-direction:column;
-  height:440px;
-  min-height:440px;
+  height:407px;
+  min-height:407px;
+  max-height:407px;
   position:relative;
+  box-sizing:border-box;
   transition:transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.22s ease;
 }
 .card:hover{
@@ -400,30 +434,32 @@ body{
   display:flex;
   justify-content:space-between;
   align-items:flex-start;
-  gap:10px;
+  gap:8px;
   position:relative;
   z-index:2;
-  min-height:32px;
+  min-height:28px;
 }
 .title{
   font-weight:700;
-  font-size:19px;
+  font-size:17.5px;
   line-height:1.35;
   color:var(--dark);
   flex:1;
   word-break:break-word;
 }
 .badge-wrap{
-  margin-top:6px;
-  margin-bottom:6px;
+  margin-top:5px;
+  margin-bottom:5px;
   position:relative;
   z-index:2;
 }
 .badge{
-  font-size:13px;
-  padding:4px 14px;
+  font-size:12.5px;
+  padding:3px 12px;
   border-radius:999px;
-  display:inline-block;
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
   font-weight:600;
   word-break:break-word;
 }
@@ -431,8 +467,8 @@ body{
   white-space:pre-wrap;
   line-height:1.65;
   color:var(--body-text);
-  font-size:15px;
-  margin:10px 0 6px 0;
+  font-size:14px;
+  margin:8px 0 4px 0;
   display:-webkit-box;
   -webkit-line-clamp:7;
   -webkit-box-orient:vertical;
@@ -450,13 +486,13 @@ body{
 .expand-btn{
   background:none;
   border:none;
-  padding:4px 0;
-  font-size:13.5px;
+  padding:2px 0;
+  font-size:13px;
   font-weight:700;
   cursor:pointer;
   text-align:center;
   width:100%;
-  margin:4px 0 8px 0;
+  margin:2px 0 6px 0;
   display:block;
   transition:opacity 0.15s ease;
   font-family:var(--font-main);
@@ -468,14 +504,14 @@ body{
 }
 .actions{
   display:flex;
-  gap:10px;
+  gap:8px;
   margin-top:auto;
   position:relative;
   z-index:2;
 }
 .actions button{
   flex:1;
-  height:44px;
+  height:42px;
   border-radius:16px;
   font-size:14px;
   font-weight:700;
@@ -487,6 +523,7 @@ body{
   transition:all 0.15s ease;
   user-select:none;
   font-family:var(--font-main);
+  box-sizing:border-box;
 }
 .actions button:hover{
   transform:translateY(-2px);
@@ -536,24 +573,23 @@ body{
   box-shadow:0 14px 32px rgba(255, 181, 203, 0.35);
 }
 .card.theme-melody .card-top .title{
-  padding-left:78px;
+  padding-left:88px;
 }
-.card.theme-melody .expand-btn{
-  margin-left:78px;
-  width:calc(100% - 78px);
+.card.theme-melody .badge-wrap{
+  padding-left:88px;
 }
 .card.theme-melody .actions{
-  margin-left:78px;
+  margin-left:92px;
 }
 .sticker-melody-top{
-  top:-24px;
-  left:14px;
-  height:58px;
+  top:-35px;
+  left:5px;
+  height:82px;
 }
 .sticker-melody-bottom{
-  bottom:12px;
-  left:8px;
-  height:110px;
+  bottom:2px;
+  left:-4px;
+  height:122px;
 }
 .badge-melody{
   background:#fff0f5;
@@ -588,17 +624,20 @@ body{
   box-shadow:0 14px 32px rgba(158, 212, 253, 0.4);
 }
 .card.theme-cinnamon .card-top .title{
-  padding-left:70px;
+  padding-left:78px;
+}
+.card.theme-cinnamon .badge-wrap{
+  padding-left:78px;
 }
 .sticker-cinnamon-top{
-  top:-24px;
-  left:12px;
-  height:48px;
+  top:-37px;
+  left:27px;
+  height:68px;
 }
 .sticker-cinnamon-bottom{
-  bottom:58px;
-  left:16px;
-  height:68px;
+  bottom:63px;
+  left:9px;
+  height:95px;
 }
 .badge-cinnamon{
   background:#eaf6fd;
@@ -633,23 +672,29 @@ body{
   box-shadow:0 14px 32px rgba(201, 180, 232, 0.42);
 }
 .card.theme-duo .card-top .title{
-  padding-left:10px;
-  margin-top:6px;
+  padding-left:14px;
+  margin-top:4px;
 }
 .sticker-duo-top{
-  top:-24px;
-  left:14px;
-  height:50px;
+  top:-37px;
+  left:1px;
+  height:52px;
+  width:215px;
+  object-fit:contain;
 }
 .sticker-duo-bot-left{
-  bottom:58px;
-  left:14px;
-  height:62px;
+  bottom:61px;
+  left:11px;
+  height:77px;
+  width:115px;
+  object-fit:contain;
 }
 .sticker-duo-bot-right{
-  bottom:46px;
-  right:10px;
-  height:68px;
+  bottom:57px;
+  right:4px;
+  height:75px;
+  width:70px;
+  object-fit:contain;
 }
 .badge-duo{
   background:#fff1f4;
@@ -806,6 +851,7 @@ textarea{min-height:180px;resize:vertical;line-height:1.5}
 
 <!-- Background Floating Decorations matching S8192023 -->
 <div class="bg-decorations">
+  <svg class="bg-decor bg-cloud" style="top:900px;left:-10px;width:95px;height:55px;" viewBox="0 0 100 60" fill="#e0f2fe"><path d="M20 45 A15 15 0 0 1 35 25 A20 20 0 0 1 70 25 A15 15 0 0 1 85 45 Z"/></svg>
   <div class="bg-decor bg-heart-pink" style="top:240px;left:16px;">💕</div>
   <div class="bg-decor bg-heart-pink" style="top:330px;left:12px;">💗</div>
   <div class="bg-decor bg-heart-pink" style="top:860px;left:14px;">💕</div>
@@ -826,7 +872,7 @@ textarea{min-height:180px;resize:vertical;line-height:1.5}
   <!-- Top Action Buttons Row -->
   <div class="action-bar-row">
     <div class="action-buttons-group">
-      <a href="page2.html" class="nav-btn" title="ไปหน้าคำนวณค่างวด">
+      <a href="page2.html" id="page2Btn" class="nav-btn" title="ไปหน้าคำนวณค่างวด">
         <span class="icon-box pink">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
         </span>
@@ -1244,9 +1290,9 @@ const initial = [
   ["เปลี่ยนรอบชำระ","💳 ค่าบริการ","เปลี่ยนรอบชำระ ค่าบริการ 300 บาท\n\nช่องทางโอนเงิน\nธนาคารกรุงไทย\nเลขบัญชี 6630313410\nชื่อบัญชี อรรถพล บุตรพรม\n\nหากโอนแล้วส่งสลิปให้ทางแอดมินตรวจสอบได้เลยค่ะ"],
   ["ขอปลดล็อกเครื่อง","💳 ค่าบริการ","เรื่อง: แจ้งขอปลดล็อกเครื่อง - ลูกค้าต้องการเปลี่ยนเครื่อง\nเลขที่สัญญา: BUG0000782\nชื่อ-สกุล: วรวุฒิ ศรีประเสริฐ\nSerial Number: QK2Q5W75V9\n\n📌 ร้านเพียวโมบาย ได้โอนเงินให้บริษัทแล้ว\nค่าบริการปลดออกจากระบบ 150 = รวม 150 บาท\nตรวจสอบสลิปโอนเรียบร้อยค่ะ @! Boommm"],
   ["ขอชื่อ-นามสกุล","🔍 ตรวจสอบเครดิต","รบกวนขอชื่อ - นามสกุลของลูกค้าเพิ่มเติมหน่อยนะคะ"],
-  ["ขอเอกสารเพิ่มเติม","📝 เอกสาร","📍 แอดมินรบกวนขอเอกสารเพิ่มเติมนะคะ\n\n📂 เลือกส่งเพียง 1 อย่าง:\n\n✅ 1. สลิปเงินเดือน (3 เดือนย้อนหลัง)\n✅ 2. สเตทเมนต์ธนาคาร (3 เดือนย้อนหลัง)\n\n💡 หมายเหตุ: หากลูกค้าไม่สะดวกเรื่องเอกสาร จะต้องปรับเป็น วางเงินดาวน์ 35% เพื่อรับเครื่องค่ะ"],
+  ["ขอเอกสารเพิ่มเติม","💰 ดาวน์","📍 แอดมินรบกวนขอเอกสารเพิ่มเติมนะคะ\n\n📂 เลือกส่งเพียง 1 อย่าง:\n\n✅ 1. สลิปเงินเดือน (3 เดือนย้อนหลัง)\n✅ 2. สเตทเมนต์ธนาคาร (3 เดือนย้อนหลัง)\n\n💡 หมายเหตุ: หากลูกค้าไม่สะดวกเรื่องเอกสาร จะต้องปรับเป็น วางเงินดาวน์ 35% เพื่อรับเครื่องค่ะ"],
   ["เครื่องราคาสูง","💰 ดาวน์","📍เนื่องจากเป็นสินค้ามูลค่าสูง เงื่อนไขบริษัทจะต้องมี เอกสารรายได้ประกอบการส่งเคสทุกครั้ง ค่ะ\n\nเลือกส่งเพียง 1 อย่าง:\n\n✅ 1. สลิปเงินเดือน (3 เดือนย้อนหลัง)\n✅ 2. สเตทเมนต์ธนาคาร (3 เดือนย้อนหลัง)\n\n⚠️ กรณีไม่สะดวก/ไม่มีเอกสาร: จะต้องปรับเป็น วางเงินดาวน์ 35% เพื่ออนุมัติรับเครื่องค่ะ"],
-  ["iPhone 18 Series — ดาวน์เริ่มต้น 30%","💰 ดาวน์","📢 แจ้งเงื่อนไขผ่อน iPhone 18 Series\n\n📱 ดาวน์เริ่มต้น 30%\n📆 ผ่อนสูงสุด 15 งวด\n\n📌 เงื่อนไขสำคัญ\nทุกเคสต้องแนบ เอกสารแสดงรายได้ ประกอบการส่งเคส โดยเลือกส่งเพียง 1 อย่าง ดังนี้\n\n✅ 1. สลิปเงินเดือนย้อนหลัง 3 เดือน\n✅ 2. สเตทเมนต์ธนาคารย้อนหลัง 3 เดือน\n\n⚠️ กรณีไม่มีหรือไม่สะดวกส่งเอกสารรายได้\nจะต้องปรับเป็น ดาวน์ 40% เพื่อดำเนินการอนุมัติรับเครื่องค่ะ"]
+  ["iPhone 18 Series — ดาวน์เริ่มต้น 30%","📱 iPhone 18 Series","📢 แจ้งเงื่อนไขผ่อน iPhone 18 Series\n\n📱 ดาวน์เริ่มต้น 30%\n📆 ผ่อนสูงสุด 15 งวด\n\n📌 เงื่อนไขสำคัญ\nทุกเคสต้องแนบ เอกสารแสดงรายได้ ประกอบการส่งเคส โดยเลือกส่งเพียง 1 อย่าง ดังนี้\n\n✅ 1. สลิปเงินเดือนย้อนหลัง 3 เดือน\n✅ 2. สเตทเมนต์ธนาคารย้อนหลัง 3 เดือน\n\n⚠️ กรณีไม่มีหรือไม่สะดวกส่งเอกสารรายได้\nจะต้องปรับเป็น ดาวน์ 40% เพื่อดำเนินการอนุมัติรับเครื่องค่ะ"]
 ].map((x, i) => ({ id: "p" + i, name: x[0], category: x[1], content: x[2], fav: false }));
 
 let data = [];
@@ -1476,7 +1522,7 @@ function categories(){
     let ribbonSticker = "";
 
     if (c === "ทั้งหมด") {
-      iconPrefix = `<svg width="18" height="18" viewBox="0 0 24 24" fill="white" style="vertical-align:middle;margin-right:2px"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>`;
+      iconPrefix = `<svg width="15" height="15" viewBox="0 0 24 24" fill="white" style="vertical-align:middle;margin-right:4px"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>`;
       ribbonSticker = `<img src="assets/cat_ribbon.png" alt="Ribbon" class="cat-ribbon-img">`;
     }
 
@@ -2075,6 +2121,10 @@ document.addEventListener("DOMContentLoaded", () => {
   try{
     const cached = JSON.parse(localStorage.getItem("bugfinn_patterns") || "[]");
     if(Array.isArray(cached) && cached.length > 0){
+      cached.forEach(it => {
+        if(it.name === "ขอเอกสารเพิ่มเติม" && it.category === "📝 เอกสาร") it.category = "💰 ดาวน์";
+        if(it.name === "iPhone 18 Series — ดาวน์เริ่มต้น 30%" && it.category === "💰 ดาวน์") it.category = "📱 iPhone 18 Series";
+      });
       data = cached.map(x => ({ ...x, fav: !!x.fav || initialFavoriteIds.includes(x.id) }));
     }else{
       data = initial.map(x => ({ ...x, fav: initialFavoriteIds.includes(x.id) }));
